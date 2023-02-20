@@ -28,7 +28,7 @@ data "unarchive_file" "main" {
 
 resource "aws_s3_object" "main" {
   for_each = { for e in data.unarchive_file.main.output_files : e.name =>
-    e if !contains(keys(local.json_overrides), e.name)
+    e if !contains(keys(local.json_overrides), e.name) && !try(length(regex("^META\\-INF(/|\\z)", e.name)) > 0, false)
   }
 
   bucket      = var.s3_bucket
