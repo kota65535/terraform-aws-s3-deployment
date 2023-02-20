@@ -14,8 +14,6 @@ locals {
   modified_jsons = { for e in var.json_modifications : e.filename => jsonencode(merge(jsondecode(try(file("${data.unarchive_file.main.output_dir}/${e.filename}"), "{}")), e.content)) }
 }
 
-data "aws_region" "current" {}
-
 data "unarchive_file" "main" {
   type        = "zip"
   source_file = var.archive_path
