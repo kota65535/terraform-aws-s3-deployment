@@ -45,7 +45,7 @@ provider "registry.terraform.io/hashicorp/null" {
 
 provider "registry.terraform.io/kota65535/unarchive" {
   version     = "0.2.0"
-  constraints = "0.2.0"
+  constraints = "~> 0.2.0"
   hashes = [
     "h1:hTvY15SK6aZvGYUhj24gi/tPnn8aKLJqdGz5ERKCS/g=",
     "zh:19bcf3660ac7545103cf999e0066442f9d6350db9654e1496726520cef287246",
