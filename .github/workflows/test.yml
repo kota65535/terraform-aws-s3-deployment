@@ -36,3 +36,7 @@ jobs:
         run: terraform init
       - name: Run terraform apply
         run: terraform apply -auto-approve
+      - name: Test output
+        run: |
+          terraform output -json > output.json
+          diff output.json output_expected.json

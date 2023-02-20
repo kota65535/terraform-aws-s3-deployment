@@ -7,25 +7,41 @@ module "s3_deployment" {
 
   archive_path = "test.zip"
   s3_bucket    = local.bucket_name
-  json_modifications = [
+  json_overrides = [
     {
       filename = "b.json"
-      content = {
-        foo = "bar"
-      }
+      content = jsonencode({
+        h = "2"
+        i = {
+          j = 3
+          k = "4"
+        }
+      })
     }
   ]
   object_metadata = [
+    {
+      glob                = "b.json"
+      cache_control       = "public, max-age=31536000, immutable"
+      content_disposition = "inline"
+      content_encoding    = "compress"
+      content_language    = "ja-JP"
+    },
+    {
+      glob             = "*.json"
+      content_language = "en-US"
+    },
     {
       glob          = "*.html"
       cache_control = "public, max-age=0, must-revalidate"
     },
     {
       glob          = "*.js"
+      content_type  = "text/javascript"
       cache_control = "public, max-age=0, must-revalidate"
     }
   ]
-  cloudfront_distribution_id = aws_cloudfront_distribution.main.id
+  #  cloudfront_distribution_id = aws_cloudfront_distribution.main.id
 }
 
 resource "aws_s3_bucket" "main" {
@@ -46,6 +62,6 @@ resource "aws_s3_bucket" "main" {
   }
 }
 
-#output "objects" {
-#  value = module.s3_deployment.objects
-#}
+output "objects" {
+  value = module.s3_deployment.objects
+}
