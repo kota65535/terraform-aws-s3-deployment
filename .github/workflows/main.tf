@@ -45,3 +45,7 @@ resource "aws_s3_bucket" "main" {
     enabled = true
   }
 }
+
+#output "objects" {
+#  value = module.s3_deployment.objects
+#}

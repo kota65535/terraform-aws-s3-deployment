@@ -28,19 +28,19 @@ resource "aws_s3_bucket_object" "main" {
   key     = each.value.name
   content = contains(keys(local.modified_jsons), each.value.name) ? local.modified_jsons[each.value.name] : file(each.value.path)
   content_type = coalescelist(
-    [for e in local.object_metadata : e.content_type if contains(e.files, each.value.path)],
+    [for e in local.object_metadata : e.content_type if contains(e.files, each.value.name)],
     [try(local.file_types[regex("\\.[^.]+$", each.value.name)], null)]
   )[0]
   cache_control = coalescelist(
-    [for e in local.object_metadata : e.cache_control if contains(e.files, each.value.path)],
+    [for e in local.object_metadata : e.cache_control if contains(e.files, each.value.name)],
     [null]
   )[0]
   content_disposition = coalescelist(
-    [for e in local.object_metadata : e.content_disposition if contains(e.files, each.value.path)],
+    [for e in local.object_metadata : e.content_disposition if contains(e.files, each.value.name)],
     [null]
   )[0]
   content_encoding = coalescelist(
-    [for e in local.object_metadata : e.content_encoding if contains(e.files, each.value.path)],
+    [for e in local.object_metadata : e.content_encoding if contains(e.files, each.value.name)],
     [null]
   )[0]
   content_language = coalescelist(
