@@ -1,0 +1,362 @@
+{
+  "objects": {
+    "sensitive": false,
+    "type": [
+      "object",
+      {
+        "a.json": [
+          "object",
+          {
+            "acl": "string",
+            "bucket": "string",
+            "bucket_key_enabled": "bool",
+            "cache_control": "string",
+            "content": "string",
+            "content_base64": "string",
+            "content_disposition": "string",
+            "content_encoding": "string",
+            "content_language": "string",
+            "content_type": "string",
+            "etag": "string",
+            "force_destroy": "bool",
+            "id": "string",
+            "key": "string",
+            "kms_key_id": "string",
+            "metadata": [
+              "map",
+              "string"
+            ],
+            "object_lock_legal_hold_status": "string",
+            "object_lock_mode": "string",
+            "object_lock_retain_until_date": "string",
+            "server_side_encryption": "string",
+            "source": "string",
+            "source_hash": "string",
+            "storage_class": "string",
+            "tags": [
+              "map",
+              "string"
+            ],
+            "tags_all": [
+              "map",
+              "string"
+            ],
+            "version_id": "string",
+            "website_redirect": "string"
+          }
+        ],
+        "b.json": [
+          "object",
+          {
+            "acl": "string",
+            "bucket": "string",
+            "bucket_key_enabled": "bool",
+            "cache_control": "string",
+            "content": "string",
+            "content_base64": "string",
+            "content_disposition": "string",
+            "content_encoding": "string",
+            "content_language": "string",
+            "content_type": "string",
+            "etag": "string",
+            "force_destroy": "bool",
+            "id": "string",
+            "key": "string",
+            "kms_key_id": "string",
+            "metadata": [
+              "map",
+              "string"
+            ],
+            "object_lock_legal_hold_status": "string",
+            "object_lock_mode": "string",
+            "object_lock_retain_until_date": "string",
+            "server_side_encryption": "string",
+            "source": "string",
+            "source_hash": "string",
+            "storage_class": "string",
+            "tags": [
+              "map",
+              "string"
+            ],
+            "tags_all": [
+              "map",
+              "string"
+            ],
+            "version_id": "string",
+            "website_redirect": "string"
+          }
+        ],
+        "index.html": [
+          "object",
+          {
+            "acl": "string",
+            "bucket": "string",
+            "bucket_key_enabled": "bool",
+            "cache_control": "string",
+            "content": "string",
+            "content_base64": "string",
+            "content_disposition": "string",
+            "content_encoding": "string",
+            "content_language": "string",
+            "content_type": "string",
+            "etag": "string",
+            "force_destroy": "bool",
+            "id": "string",
+            "key": "string",
+            "kms_key_id": "string",
+            "metadata": [
+              "map",
+              "string"
+            ],
+            "object_lock_legal_hold_status": "string",
+            "object_lock_mode": "string",
+            "object_lock_retain_until_date": "string",
+            "server_side_encryption": "string",
+            "source": "string",
+            "source_hash": "string",
+            "storage_class": "string",
+            "tags": [
+              "map",
+              "string"
+            ],
+            "tags_all": [
+              "map",
+              "string"
+            ],
+            "version_id": "string",
+            "website_redirect": "string"
+          }
+        ],
+        "script.js": [
+          "object",
+          {
+            "acl": "string",
+            "bucket": "string",
+            "bucket_key_enabled": "bool",
+            "cache_control": "string",
+            "content": "string",
+            "content_base64": "string",
+            "content_disposition": "string",
+            "content_encoding": "string",
+            "content_language": "string",
+            "content_type": "string",
+            "etag": "string",
+            "force_destroy": "bool",
+            "id": "string",
+            "key": "string",
+            "kms_key_id": "string",
+            "metadata": [
+              "map",
+              "string"
+            ],
+            "object_lock_legal_hold_status": "string",
+            "object_lock_mode": "string",
+            "object_lock_retain_until_date": "string",
+            "server_side_encryption": "string",
+            "source": "string",
+            "source_hash": "string",
+            "storage_class": "string",
+            "tags": [
+              "map",
+              "string"
+            ],
+            "tags_all": [
+              "map",
+              "string"
+            ],
+            "version_id": "string",
+            "website_redirect": "string"
+          }
+        ],
+        "style.css": [
+          "object",
+          {
+            "acl": "string",
+            "bucket": "string",
+            "bucket_key_enabled": "bool",
+            "cache_control": "string",
+            "content": "string",
+            "content_base64": "string",
+            "content_disposition": "string",
+            "content_encoding": "string",
+            "content_language": "string",
+            "content_type": "string",
+            "etag": "string",
+            "force_destroy": "bool",
+            "id": "string",
+            "key": "string",
+            "kms_key_id": "string",
+            "metadata": [
+              "map",
+              "string"
+            ],
+            "object_lock_legal_hold_status": "string",
+            "object_lock_mode": "string",
+            "object_lock_retain_until_date": "string",
+            "server_side_encryption": "string",
+            "source": "string",
+            "source_hash": "string",
+            "storage_class": "string",
+            "tags": [
+              "map",
+              "string"
+            ],
+            "tags_all": [
+              "map",
+              "string"
+            ],
+            "version_id": "string",
+            "website_redirect": "string"
+          }
+        ]
+      }
+    ],
+    "value": {
+      "a.json": {
+        "acl": "private",
+        "bucket": "s3-deployment-561678142736",
+        "bucket_key_enabled": false,
+        "cache_control": "",
+        "content": "{\n  \"a\": \"1\",\n  \"b\": 2,\n  \"c\": {\n    \"d\": \"3\"\n  }\n}\n",
+        "content_base64": null,
+        "content_disposition": "",
+        "content_encoding": "",
+        "content_language": "en-US",
+        "content_type": "application/json",
+        "etag": "d5524a5b020a0553b930cc3f2f8e4cce",
+        "force_destroy": false,
+        "id": "a.json",
+        "key": "a.json",
+        "kms_key_id": null,
+        "metadata": {},
+        "object_lock_legal_hold_status": "",
+        "object_lock_mode": "",
+        "object_lock_retain_until_date": "",
+        "server_side_encryption": "AES256",
+        "source": "",
+        "source_hash": null,
+        "storage_class": "STANDARD",
+        "tags": {},
+        "tags_all": {},
+        "version_id": "aVyH58EfbACe658eTlFz2NxbCbR8C40_",
+        "website_redirect": ""
+      },
+      "b.json": {
+        "acl": "private",
+        "bucket": "s3-deployment-561678142736",
+        "bucket_key_enabled": false,
+        "cache_control": "public, max-age=31536000, immutable",
+        "content": "{\"a\":\"1\",\"h\":\"2\",\"i\":{\"j\":3,\"k\":\"4\"}}",
+        "content_base64": null,
+        "content_disposition": "inline",
+        "content_encoding": "compress",
+        "content_language": "ja-JP",
+        "content_type": "application/json",
+        "etag": "64cd52391a8a2843d7cb347e872720b0",
+        "force_destroy": false,
+        "id": "b.json",
+        "key": "b.json",
+        "kms_key_id": null,
+        "metadata": {},
+        "object_lock_legal_hold_status": "",
+        "object_lock_mode": "",
+        "object_lock_retain_until_date": "",
+        "server_side_encryption": "AES256",
+        "source": "",
+        "source_hash": null,
+        "storage_class": "STANDARD",
+        "tags": {},
+        "tags_all": {},
+        "version_id": ".YJNUvyYC67ccRoRQVwTASrwTo3WXXPy",
+        "website_redirect": ""
+      },
+      "index.html": {
+        "acl": "private",
+        "bucket": "s3-deployment-561678142736",
+        "bucket_key_enabled": false,
+        "cache_control": "public, max-age=0, must-revalidate",
+        "content": "\u003c!DOCTYPE html\u003e\n\u003chtml\u003e\n\u003chead\u003e\n\u003cmeta name=\"viewport\" content=\"width=device-width, initial-scale=1\"\u003e\n\u003clink rel=\"stylesheet\" href=\"style.css\"\u003e\n\u003c/head\u003e\n\u003cbody\u003e\n\n\u003ch2\u003eAlert Messages\u003c/h2\u003e\n\u003cp\u003eClick on the \"x\" symbol to close the alert message.\u003c/p\u003e\n\u003cdiv class=\"alert\"\u003e\n  \u003cspan class=\"closebtn\"\u003e\u0026times;\u003c/span\u003e\n  \u003cstrong\u003eDanger!\u003c/strong\u003e Indicates a dangerous or potentially negative action.\n\u003c/div\u003e\n\n\u003cdiv class=\"alert success\"\u003e\n  \u003cspan class=\"closebtn\"\u003e\u0026times;\u003c/span\u003e\n  \u003cstrong\u003eSuccess!\u003c/strong\u003e Indicates a successful or positive action.\n\u003c/div\u003e\n\n\u003cdiv class=\"alert info\"\u003e\n  \u003cspan class=\"closebtn\"\u003e\u0026times;\u003c/span\u003e\n  \u003cstrong\u003eInfo!\u003c/strong\u003e Indicates a neutral informative change or action.\n\u003c/div\u003e\n\n\u003cdiv class=\"alert warning\"\u003e\n  \u003cspan class=\"closebtn\"\u003e\u0026times;\u003c/span\u003e\n  \u003cstrong\u003eWarning!\u003c/strong\u003e Indicates a warning that might need attention.\n\u003c/div\u003e\n\n\u003cscript src=\"script.js\"\u003e\u003c/script\u003e\n\u003c/body\u003e\n\u003c/html\u003e\n",
+        "content_base64": null,
+        "content_disposition": "",
+        "content_encoding": "",
+        "content_language": "",
+        "content_type": "text/html; charset=utf-8",
+        "etag": "faeee5e2efb928e33b0eb232a1ce1f85",
+        "force_destroy": false,
+        "id": "index.html",
+        "key": "index.html",
+        "kms_key_id": null,
+        "metadata": {},
+        "object_lock_legal_hold_status": "",
+        "object_lock_mode": "",
+        "object_lock_retain_until_date": "",
+        "server_side_encryption": "AES256",
+        "source": "",
+        "source_hash": null,
+        "storage_class": "STANDARD",
+        "tags": {},
+        "tags_all": {},
+        "version_id": "Hib8S9fmdrZ8yVD2VHu83SrppT3MIBCW",
+        "website_redirect": ""
+      },
+      "script.js": {
+        "acl": "private",
+        "bucket": "s3-deployment-561678142736",
+        "bucket_key_enabled": false,
+        "cache_control": "public, max-age=0, must-revalidate",
+        "content": "var close = document.getElementsByClassName(\"closebtn\");\nvar i;\n\nfor (i = 0; i \u003c close.length; i++) {\n  close[i].onclick = function(){\n    var div = this.parentElement;\n    div.style.opacity = \"0\";\n    setTimeout(function(){ div.style.display = \"none\"; }, 600);\n  }\n}\n",
+        "content_base64": null,
+        "content_disposition": "",
+        "content_encoding": "",
+        "content_language": "",
+        "content_type": "text/javascript",
+        "etag": "847706ee8f66d4a9b30302446279ea5e",
+        "force_destroy": false,
+        "id": "script.js",
+        "key": "script.js",
+        "kms_key_id": null,
+        "metadata": {},
+        "object_lock_legal_hold_status": "",
+        "object_lock_mode": "",
+        "object_lock_retain_until_date": "",
+        "server_side_encryption": "AES256",
+        "source": "",
+        "source_hash": null,
+        "storage_class": "STANDARD",
+        "tags": {},
+        "tags_all": {},
+        "version_id": "kmzpcMwZ2gzSSB.HqIrfuKBdL39tc6gl",
+        "website_redirect": ""
+      },
+      "style.css": {
+        "acl": "private",
+        "bucket": "s3-deployment-561678142736",
+        "bucket_key_enabled": false,
+        "cache_control": "",
+        "content": ".alert {\n  padding: 20px;\n  background-color: #f44336;\n  color: white;\n  opacity: 1;\n  transition: opacity 0.6s;\n  margin-bottom: 15px;\n}\n\n.alert.success {background-color: #04AA6D;}\n.alert.info {background-color: #2196F3;}\n.alert.warning {background-color: #ff9800;}\n\n.closebtn {\n  margin-left: 15px;\n  color: white;\n  font-weight: bold;\n  float: right;\n  font-size: 22px;\n  line-height: 20px;\n  cursor: pointer;\n  transition: 0.3s;\n}\n\n.closebtn:hover {\n  color: black;\n}\n",
+        "content_base64": null,
+        "content_disposition": "",
+        "content_encoding": "",
+        "content_language": "",
+        "content_type": "text/css; charset=utf-8",
+        "etag": "ed143c36d3a6cb0fec57de6d828bb52a",
+        "force_destroy": false,
+        "id": "style.css",
+        "key": "style.css",
+        "kms_key_id": null,
+        "metadata": {},
+        "object_lock_legal_hold_status": "",
+        "object_lock_mode": "",
+        "object_lock_retain_until_date": "",
+        "server_side_encryption": "AES256",
+        "source": "",
+        "source_hash": null,
+        "storage_class": "STANDARD",
+        "tags": {},
+        "tags_all": {},
+        "version_id": "WYEwJwwMxDBUm6QLZd7xPFa1meuAbK5W",
+        "website_redirect": ""
+      }
+    }
+  }
+}
