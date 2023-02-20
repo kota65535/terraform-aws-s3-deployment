@@ -36,7 +36,7 @@ resource "aws_s3_bucket_object" "main" {
   source      = each.value.path
   source_hash = filemd5(each.value.path)
   content_type = coalescelist(
-    [for e in local.object_metadata : e.content_type if contains(e.files, each.key)],
+    compact([for e in local.object_metadata : e.content_type if contains(e.files, each.key)]),
     [try(local.file_types[regex("\\.[^.]+$", each.key)], null)]
   )[0]
   cache_control = coalescelist(
@@ -64,7 +64,7 @@ resource "aws_s3_bucket_object" "json" {
   key     = each.key
   content = each.value
   content_type = coalescelist(
-    [for e in local.object_metadata : e.content_type if contains(e.files, each.key)],
+    compact([for e in local.object_metadata : e.content_type if contains(e.files, each.key)]),
     [try(local.file_types[regex("\\.[^.]+$", each.key)], null)]
   )[0]
   cache_control = coalescelist(
