@@ -1,6 +1,6 @@
 locals {
   terraform_tmp_dir  = "${path.root}/.terraform/tmp"
-  archive_output_dir = "${local.terraform_tmp_dir}/${filesha256(var.archive_path)}"
+  archive_output_dir = "${local.terraform_tmp_dir}/${filemd5(var.archive_path)}"
   json_overrides = { for e in var.json_overrides : e.filename =>
     jsonencode(merge(
       jsondecode(file("${data.unarchive_file.main.output_dir}/${e.filename}")),
@@ -26,33 +26,65 @@ data "unarchive_file" "main" {
   output_dir  = local.archive_output_dir
 }
 
-resource "aws_s3_bucket_object" "main" {
-  for_each = { for i in data.unarchive_file.main.output_files : i.name => i }
+resource "aws_s3_object" "main" {
+  for_each = { for e in data.unarchive_file.main.output_files : e.name =>
+    e if !contains(keys(local.json_overrides), e.name)
+  }
 
-  bucket = var.s3_bucket
-  key    = each.value.name
-  content = (contains(keys(local.json_overrides), each.value.name)
-    ? local.json_overrides[each.value.name]
-    : file("${data.unarchive_file.main.output_dir}/${each.value.name}")
-  )
+  bucket      = var.s3_bucket
+  key         = each.key
+  source      = each.value.path
+  source_hash = filemd5(each.value.path)
   content_type = coalescelist(
-    [for e in local.object_metadata : e.content_type if contains(e.files, each.value)],
-    [try(local.file_types[regex("\\.[^.]+$", each.value)], null)]
+    compact([for e in local.object_metadata : e.content_type if contains(e.files, each.key)]),
+    [try(local.file_types[regex("\\.[^.]+$", each.key)], null)]
   )[0]
   cache_control = coalescelist(
-    [for e in local.object_metadata : e.cache_control if contains(e.files, each.value.name)],
+    [for e in local.object_metadata : e.cache_control if contains(e.files, each.key)],
     [null]
   )[0]
   content_disposition = coalescelist(
-    [for e in local.object_metadata : e.content_disposition if contains(e.files, each.value.name)],
+    [for e in local.object_metadata : e.content_disposition if contains(e.files, each.key)],
     [null]
   )[0]
   content_encoding = coalescelist(
-    [for e in local.object_metadata : e.content_encoding if contains(e.files, each.value.name)],
+    [for e in local.object_metadata : e.content_encoding if contains(e.files, each.key)],
     [null]
   )[0]
   content_language = coalescelist(
-    [for e in local.object_metadata : e.content_language if contains(e.files, each.value.name)],
+    [for e in local.object_metadata : e.content_language if contains(e.files, each.key)],
+    [null]
+  )[0]
+
+  lifecycle {
+    ignore_changes = [source]
+  }
+}
+
+resource "aws_s3_object" "json" {
+  for_each = local.json_overrides
+
+  bucket  = var.s3_bucket
+  key     = each.key
+  content = each.value
+  content_type = coalescelist(
+    compact([for e in local.object_metadata : e.content_type if contains(e.files, each.key)]),
+    [try(local.file_types[regex("\\.[^.]+$", each.key)], null)]
+  )[0]
+  cache_control = coalescelist(
+    [for e in local.object_metadata : e.cache_control if contains(e.files, each.key)],
+    [null]
+  )[0]
+  content_disposition = coalescelist(
+    [for e in local.object_metadata : e.content_disposition if contains(e.files, each.key)],
+    [null]
+  )[0]
+  content_encoding = coalescelist(
+    [for e in local.object_metadata : e.content_encoding if contains(e.files, each.key)],
+    [null]
+  )[0]
+  content_language = coalescelist(
+    [for e in local.object_metadata : e.content_language if contains(e.files, each.key)],
     [null]
   )[0]
 }
@@ -60,7 +92,7 @@ resource "aws_s3_bucket_object" "main" {
 resource "null_resource" "invalidation" {
   count = var.cloudfront_distribution_id != null ? 1 : 0
   triggers = {
-    archive_sha256  = filesha256(var.archive_path)
+    archive_hash    = filemd5(var.archive_path)
     json_overrides  = jsonencode(var.json_overrides)
     object_metadata = jsonencode(var.object_metadata)
   }
