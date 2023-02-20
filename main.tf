@@ -1,6 +1,6 @@
 locals {
   terraform_tmp_dir  = "${path.root}/.terraform/tmp"
-  archive_output_dir = "${local.terraform_tmp_dir}/${filesha256(var.archive_path)}"
+  archive_output_dir = "${local.terraform_tmp_dir}/${filemd5(var.archive_path)}"
   json_overrides = { for e in var.json_overrides : e.filename =>
     jsonencode(merge(
       jsondecode(file("${data.unarchive_file.main.output_dir}/${e.filename}")),
@@ -26,7 +26,7 @@ data "unarchive_file" "main" {
   output_dir  = local.archive_output_dir
 }
 
-resource "aws_s3_bucket_object" "main" {
+resource "aws_s3_object" "main" {
   for_each = { for e in data.unarchive_file.main.output_files : e.name =>
     e if !contains(keys(local.json_overrides), e.name)
   }
@@ -55,9 +55,13 @@ resource "aws_s3_bucket_object" "main" {
     [for e in local.object_metadata : e.content_language if contains(e.files, each.key)],
     [null]
   )[0]
+
+  lifecycle {
+    ignore_changes = [source]
+  }
 }
 
-resource "aws_s3_bucket_object" "json" {
+resource "aws_s3_object" "json" {
   for_each = local.json_overrides
 
   bucket  = var.s3_bucket
@@ -88,7 +92,7 @@ resource "aws_s3_bucket_object" "json" {
 resource "null_resource" "invalidation" {
   count = var.cloudfront_distribution_id != null ? 1 : 0
   triggers = {
-    archive_sha256  = filesha256(var.archive_path)
+    archive_hash    = filemd5(var.archive_path)
     json_overrides  = jsonencode(var.json_overrides)
     object_metadata = jsonencode(var.object_metadata)
   }
