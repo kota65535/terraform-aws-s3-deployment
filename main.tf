@@ -27,32 +27,60 @@ data "unarchive_file" "main" {
 }
 
 resource "aws_s3_bucket_object" "main" {
-  for_each = { for i in data.unarchive_file.main.output_files : i.name => i }
+  for_each = { for e in data.unarchive_file.main.output_files : e.name =>
+    e if !contains(keys(local.json_overrides), e.name)
+  }
 
-  bucket = var.s3_bucket
-  key    = each.value.name
-  content = (contains(keys(local.json_overrides), each.value.name)
-    ? local.json_overrides[each.value.name]
-    : file("${data.unarchive_file.main.output_dir}/${each.value.name}")
-  )
+  bucket      = var.s3_bucket
+  key         = each.key
+  source      = each.value.path
+  source_hash = filemd5(each.value.path)
+  content_type = coalescelist(
+    [for e in local.object_metadata : e.content_type if contains(e.files, each.key)],
+    [try(local.file_types[regex("\\.[^.]+$", each.key)], null)]
+  )[0]
+  cache_control = coalescelist(
+    [for e in local.object_metadata : e.cache_control if contains(e.files, each.key)],
+    [null]
+  )[0]
+  content_disposition = coalescelist(
+    [for e in local.object_metadata : e.content_disposition if contains(e.files, each.key)],
+    [null]
+  )[0]
+  content_encoding = coalescelist(
+    [for e in local.object_metadata : e.content_encoding if contains(e.files, each.key)],
+    [null]
+  )[0]
+  content_language = coalescelist(
+    [for e in local.object_metadata : e.content_language if contains(e.files, each.key)],
+    [null]
+  )[0]
+}
+
+resource "aws_s3_bucket_object" "json" {
+  for_each = local.json_overrides
+
+  bucket  = var.s3_bucket
+  key     = each.key
+  content = each.value
   content_type = coalescelist(
     [for e in local.object_metadata : e.content_type if contains(e.files, each.value)],
     [try(local.file_types[regex("\\.[^.]+$", each.value)], null)]
   )[0]
   cache_control = coalescelist(
-    [for e in local.object_metadata : e.cache_control if contains(e.files, each.value.name)],
+    [for e in local.object_metadata : e.cache_control if contains(e.files, each.key)],
     [null]
   )[0]
   content_disposition = coalescelist(
-    [for e in local.object_metadata : e.content_disposition if contains(e.files, each.value.name)],
+    [for e in local.object_metadata : e.content_disposition if contains(e.files, each.key)],
     [null]
   )[0]
   content_encoding = coalescelist(
-    [for e in local.object_metadata : e.content_encoding if contains(e.files, each.value.name)],
+    [for e in local.object_metadata : e.content_encoding if contains(e.files, each.key)],
     [null]
   )[0]
   content_language = coalescelist(
-    [for e in local.object_metadata : e.content_language if contains(e.files, each.value.name)],
+    [for e in local.object_metadata : e.content_language if contains(e.files, each.key)],
     [null]
   )[0]
 }
