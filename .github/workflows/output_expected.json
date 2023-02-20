@@ -258,7 +258,7 @@
         "bucket": "s3-deployment-561678142736",
         "bucket_key_enabled": false,
         "cache_control": "",
-        "content": "",
+        "content": null,
         "content_base64": null,
         "content_disposition": "",
         "content_encoding": "",
@@ -279,7 +279,7 @@
         "storage_class": "STANDARD",
         "tags": {},
         "tags_all": {},
-        "version_id": "U8Y3nj2a5FNCYRe_DTT7WNUJ.Ifr0STN",
+        "version_id": "T7AxCHVojdVxKvjpTI1hjFKBFvwka_MD",
         "website_redirect": ""
       },
       "b.json": {
@@ -292,7 +292,7 @@
         "content_disposition": "inline",
         "content_encoding": "compress",
         "content_language": "ja-JP",
-        "content_type": "binary/octet-stream",
+        "content_type": "application/json",
         "etag": "64cd52391a8a2843d7cb347e872720b0",
         "force_destroy": false,
         "id": "b.json",
@@ -308,7 +308,7 @@
         "storage_class": "STANDARD",
         "tags": {},
         "tags_all": {},
-        "version_id": "ukpbsaDkRkp8XAkxl7TReDNqKeiClqok",
+        "version_id": "8TidPztgsj6dzuo9cD5CbvGKJ9jgGlS5",
         "website_redirect": ""
       },
       "index.html": {
@@ -316,7 +316,7 @@
         "bucket": "s3-deployment-561678142736",
         "bucket_key_enabled": false,
         "cache_control": "public, max-age=0, must-revalidate",
-        "content": "",
+        "content": null,
         "content_base64": null,
         "content_disposition": "",
         "content_encoding": "",
@@ -337,7 +337,7 @@
         "storage_class": "STANDARD",
         "tags": {},
         "tags_all": {},
-        "version_id": "xmw3jOwxF1qNWNrhKQ9iqIbCkGcNP9xJ",
+        "version_id": "Gn0nOfDgyo5mnlJMzBWLv12ZcM_TUtVs",
         "website_redirect": ""
       },
       "octocat.png": {
@@ -366,7 +366,7 @@
         "storage_class": "STANDARD",
         "tags": {},
         "tags_all": {},
-        "version_id": "7UlxmhtXAlWiA.5lUVwSFSV5YnWMbOSl",
+        "version_id": "1AfHZ.vw.qrzT_QSrIWmGxbsSNJ4c2ux",
         "website_redirect": ""
       },
       "script.js": {
@@ -374,7 +374,7 @@
         "bucket": "s3-deployment-561678142736",
         "bucket_key_enabled": false,
         "cache_control": "public, max-age=0, must-revalidate",
-        "content": "",
+        "content": null,
         "content_base64": null,
         "content_disposition": "",
         "content_encoding": "",
@@ -395,7 +395,7 @@
         "storage_class": "STANDARD",
         "tags": {},
         "tags_all": {},
-        "version_id": "dDvvRaYAwDP71Q88W3xx_h76AcdPTYrK",
+        "version_id": "aRDOKWVIh.res5BakROIr5bU30B30bR7",
         "website_redirect": ""
       },
       "style.css": {
@@ -403,7 +403,7 @@
         "bucket": "s3-deployment-561678142736",
         "bucket_key_enabled": false,
         "cache_control": "",
-        "content": "",
+        "content": null,
         "content_base64": null,
         "content_disposition": "",
         "content_encoding": "",
@@ -424,7 +424,7 @@
         "storage_class": "STANDARD",
         "tags": {},
         "tags_all": {},
-        "version_id": "4vYlq1_0IaR71t0DkMzFDi3Ia9N7yLCK",
+        "version_id": "6P63H91LzEIcIg7O_IjHuJy5xlaJEms9",
         "website_redirect": ""
       }
     }

@@ -46,20 +46,6 @@ module "s3_deployment" {
 
 resource "aws_s3_bucket" "main" {
   bucket = local.bucket_name
-
-  cors_rule {
-    allowed_headers = [
-      "Authorization",
-      "Content-Length"
-    ]
-    allowed_methods = ["GET"]
-    allowed_origins = ["*"]
-    max_age_seconds = 3000
-  }
-
-  versioning {
-    enabled = true
-  }
 }
 
 output "objects" {
