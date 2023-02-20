@@ -28,6 +28,7 @@ runs:
       uses: hashicorp/setup-terraform@v2
       with:
         terraform_version: ${{ env.TERRAFORM_VERSION }}
+        terraform_wrapper: false
     - name: Setup node (cf. https://github.com/hashicorp/setup-terraform/issues/84)
       uses: actions/setup-node@v3
       with:
