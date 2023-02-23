@@ -53,6 +53,6 @@ resource "aws_s3_bucket_policy" "main" {
   policy = data.aws_iam_policy_document.oai.json
 }
 
-output "objects" {
-  value = module.s3_deployment.objects
+output "s3_objects" {
+  value = module.s3_deployment.s3_objects
 }

@@ -1,5 +1,5 @@
 {
-  "objects": {
+  "s3_objects": {
     "sensitive": false,
     "type": [
       "object",
