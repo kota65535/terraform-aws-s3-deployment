@@ -6,7 +6,7 @@ Terraform module which deploys a static website to a S3 bucket.
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_unarchive"></a> [unarchive](#requirement\_unarchive) | ~> 0.2.0 |
+| <a name="requirement_unarchive"></a> [unarchive](#requirement\_unarchive) | ~> 0.3.0 |
 
 ## Providers
 
@@ -14,7 +14,7 @@ Terraform module which deploys a static website to a S3 bucket.
 |------|---------|
 | <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
 | <a name="provider_null"></a> [null](#provider\_null) | n/a |
-| <a name="provider_unarchive"></a> [unarchive](#provider\_unarchive) | ~> 0.2.0 |
+| <a name="provider_unarchive"></a> [unarchive](#provider\_unarchive) | ~> 0.3.0 |
 
 ## Modules
 
@@ -43,4 +43,4 @@ No modules.
 
 | Name | Description |
 |------|-------------|
-| <a name="output_objects"></a> [objects](#output\_objects) | n/a |
+| <a name="output_s3_objects"></a> [s3\_objects](#output\_s3\_objects) | Uploaded S3 objects |
