@@ -39,13 +39,13 @@ jobs:
       - name: Test output
         run: |
           terraform output -json > output.json
-          diff output.json output_expected.json
+          diff output.json expected.json
       - name: Update archive
         run: |
           perl -pi -e "s/test.zip/test2.zip/g" main.tf
-      - name: Run terraform apply
+      - name: Run terraform apply (2nd)
         run: terraform apply -auto-approve
-      - name: Test output
+      - name: Test output (2nd)
         run: |
-          terraform output -json > output_2.json
-          diff output_2.json output_expected_2.json
+          terraform output -json > output2.json
+          diff output2.json expected2.json
