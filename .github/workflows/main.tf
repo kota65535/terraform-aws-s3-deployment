@@ -41,7 +41,6 @@ module "s3_deployment" {
       cache_control = "public, max-age=0, must-revalidate"
     }
   ]
-  cloudfront_distribution_id = aws_cloudfront_distribution.main.id
 }
 
 resource "aws_s3_bucket" "main" {

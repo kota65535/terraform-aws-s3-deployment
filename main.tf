@@ -1,6 +1,6 @@
 locals {
   terraform_tmp_dir  = "${path.root}/.terraform/tmp"
-  archive_output_dir = "${local.terraform_tmp_dir}/${filemd5(var.archive_path)}"
+  archive_output_dir = "${local.terraform_tmp_dir}/s3-deployment"
   json_overrides = { for e in var.json_overrides : e.filename =>
     jsonencode(merge(
       jsondecode(file("${data.unarchive_file.main.output_dir}/${e.filename}")),
@@ -55,10 +55,6 @@ resource "aws_s3_object" "main" {
     [for e in local.object_metadata : e.content_language if contains(e.files, each.key)],
     [null]
   )[0]
-
-  lifecycle {
-    ignore_changes = [source]
-  }
 }
 
 resource "aws_s3_object" "json" {
