@@ -18,7 +18,7 @@ jobs:
         env:
           JSON: ${{ toJSON(github) }}
 
-  terraform-apply:
+  test:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -39,4 +39,13 @@ jobs:
       - name: Test output
         run: |
           terraform output -json > output.json
-          diff output.json output_expected.json
+          diff output.json expected.json
+      - name: Update archive
+        run: |
+          perl -pi -e "s/test.zip/test2.zip/g" main.tf
+      - name: Run terraform apply (2nd)
+        run: terraform apply -auto-approve
+      - name: Test output (2nd)
+        run: |
+          terraform output -json > output2.json
+          diff output2.json expected2.json
