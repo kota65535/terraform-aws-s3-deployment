@@ -86,6 +86,11 @@ resource "aws_s3_object" "modified" {
   )[0]
 }
 
+moved {
+  from = aws_s3_object.json
+  to   = aws_s3_object.modified
+}
+
 resource "null_resource" "invalidation" {
   count = var.cloudfront_distribution_id != null ? 1 : 0
   triggers = {
