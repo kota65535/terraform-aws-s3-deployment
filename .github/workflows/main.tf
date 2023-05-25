@@ -1,5 +1,9 @@
 locals {
   bucket_name = "s3-deployment-561678142736"
+  config = {
+    unicorns = "awesome"
+    abc      = [1, 2, 3]
+  }
 }
 
 module "s3_deployment" {
@@ -7,6 +11,12 @@ module "s3_deployment" {
 
   archive_path = "test.zip"
   s3_bucket    = local.bucket_name
+  file_replacements = [
+    {
+      filename = "config-*.js"
+      content  = "const c = JSON.parse('${jsonencode(local.config)}'); export default c;"
+    }
+  ]
   json_overrides = [
     {
       filename = "b.json"
