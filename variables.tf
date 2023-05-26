@@ -14,10 +14,23 @@ variable "cloudfront_distribution_id" {
   default     = null
 }
 
+variable "file_replacements" {
+  description = <<-EOT
+  File replacement settings.
+  filename : Name of a file whose contents will be replaced. A glob pattern is available and if multiple files match, the first one in lexicographic order is used.
+  content  : Content string to store in the file
+EOT
+  type = list(object({
+    filename = string
+    content  = string
+  }))
+  default = []
+}
+
 variable "json_overrides" {
   description = <<-EOT
   JSON override settings.
-  filename : Name of a JSON file whose properties are to be overridden
+  filename : Name of a JSON file whose properties will be overridden. A glob pattern is available and if multiple files match, the first one in lexicographic order is used.
   content  : JSON string whose properties will override them
 EOT
   type = list(object({
