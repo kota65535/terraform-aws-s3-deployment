@@ -1,6 +1,6 @@
 locals {
   terraform_tmp_dir  = "${path.root}/.terraform/tmp"
-  archive_output_dir = "${local.terraform_tmp_dir}/s3-deployment"
+  archive_output_dir = "${local.terraform_tmp_dir}/s3-deployment/${random_uuid.main.id}"
   file_replacements  = { for e in var.file_replacements : sort(fileset(data.unarchive_file.main.output_dir, e.filename))[0] => e.content if length(fileset(data.unarchive_file.main.output_dir, e.filename)) > 0 }
   json_overrides = { for e in var.json_overrides : sort(fileset(data.unarchive_file.main.output_dir, e.filename))[0] =>
     jsonencode(merge(
@@ -20,11 +20,15 @@ locals {
   ]
 }
 
+resource "random_uuid" "main" {
+}
+
+
 data "unarchive_file" "main" {
   type        = "zip"
   source_file = var.archive_path
   pattern     = "**/*"
-  output_dir  = "${local.archive_output_dir}/${basename(var.archive_path)}"
+  output_dir  = local.archive_output_dir
 }
 
 resource "aws_s3_object" "main" {
