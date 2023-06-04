@@ -1,6 +1,6 @@
 locals {
   terraform_tmp_dir  = "${path.root}/.terraform/tmp"
-  archive_output_dir = "${local.terraform_tmp_dir}/s3-deployment/${coalesce(var.archive_key, var.archive_path)}"
+  archive_output_dir = "${local.terraform_tmp_dir}/s3-deployment/${coalesce(var.archive_key, basename(var.archive_path))}"
   file_replacements  = { for e in var.file_replacements : sort(fileset(data.unarchive_file.main.output_dir, e.filename))[0] => e.content if length(fileset(data.unarchive_file.main.output_dir, e.filename)) > 0 }
   json_overrides = { for e in var.json_overrides : sort(fileset(data.unarchive_file.main.output_dir, e.filename))[0] =>
     jsonencode(merge(
