@@ -24,7 +24,7 @@ data "unarchive_file" "main" {
   type        = "zip"
   source_file = var.archive_path
   pattern     = "**/*"
-  output_dir  = local.archive_output_dir
+  output_dir  = "${local.archive_output_dir}/${basename(var.archive_path)}"
 }
 
 resource "aws_s3_object" "main" {
