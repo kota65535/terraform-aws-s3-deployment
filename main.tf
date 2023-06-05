@@ -19,7 +19,7 @@ locals {
 }
 
 data "temporary_directory" "archive" {
-  name = coalesce(var.archive_key, basename(var.archive_path))
+  name = "s3-deployment/${coalesce(var.archive_key, basename(var.archive_path))}"
 }
 
 data "unarchive_file" "main" {
@@ -86,11 +86,6 @@ resource "aws_s3_object" "modified" {
     [for e in local.object_metadata : e.content_language if contains(e.files, each.key)],
     [null]
   )[0]
-}
-
-moved {
-  from = aws_s3_object.json
-  to   = aws_s3_object.modified
 }
 
 resource "null_resource" "invalidation" {
