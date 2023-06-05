@@ -9,10 +9,18 @@ terraform {
       source  = "hashicorp/aws"
       version = "4.67.0"
     }
+    temporary = {
+      source  = "kota65535/temporary"
+      version = "0.1.0"
+    }
   }
   required_version = "~> 1.4.0"
 }
 
 provider "aws" {
   region = "ap-northeast-1"
+}
+
+provider "temporary" {
+  base = "${path.root}/.terraform/tmp"
 }
