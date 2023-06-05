@@ -1,7 +1,5 @@
 locals {
-  terraform_tmp_dir  = "${path.root}/.terraform/tmp"
-  archive_output_dir = "${local.terraform_tmp_dir}/s3-deployment"
-  file_replacements  = { for e in var.file_replacements : sort(fileset(data.unarchive_file.main.output_dir, e.filename))[0] => e.content if length(fileset(data.unarchive_file.main.output_dir, e.filename)) > 0 }
+  file_replacements = { for e in var.file_replacements : sort(fileset(data.unarchive_file.main.output_dir, e.filename))[0] => e.content if length(fileset(data.unarchive_file.main.output_dir, e.filename)) > 0 }
   json_overrides = { for e in var.json_overrides : sort(fileset(data.unarchive_file.main.output_dir, e.filename))[0] =>
     jsonencode(merge(
       jsondecode(file("${data.unarchive_file.main.output_dir}/${sort(fileset(data.unarchive_file.main.output_dir, e.filename))[0]}")),
@@ -20,11 +18,15 @@ locals {
   ]
 }
 
+data "temporary_directory" "archive" {
+  name = "s3-deployment/${coalesce(var.archive_key, basename(var.archive_path))}"
+}
+
 data "unarchive_file" "main" {
   type        = "zip"
   source_file = var.archive_path
   pattern     = "**/*"
-  output_dir  = local.archive_output_dir
+  output_dir  = data.temporary_directory.archive.id
 }
 
 resource "aws_s3_object" "main" {
@@ -84,11 +86,6 @@ resource "aws_s3_object" "modified" {
     [for e in local.object_metadata : e.content_language if contains(e.files, each.key)],
     [null]
   )[0]
-}
-
-moved {
-  from = aws_s3_object.json
-  to   = aws_s3_object.modified
 }
 
 resource "null_resource" "invalidation" {

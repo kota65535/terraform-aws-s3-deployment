@@ -3,6 +3,12 @@ variable "archive_path" {
   type        = string
 }
 
+variable "archive_key" {
+  description = "Key to identify the contents of the archive."
+  type        = string
+  default     = null
+}
+
 variable "s3_bucket" {
   description = "Name of a S3 bucket for hosting your static website"
   type        = string
