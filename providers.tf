@@ -6,11 +6,7 @@ terraform {
     }
     temporary = {
       source  = "kota65535/temporary"
-      version = "0.0.2"
+      version = "~> 0.0.2"
     }
   }
-}
-
-provider "temporary" {
-  base = "${path.root}/.terraform/tmp/s3-deployment"
 }
