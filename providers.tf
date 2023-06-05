@@ -4,5 +4,13 @@ terraform {
       source  = "kota65535/unarchive"
       version = "~> 0.3.0"
     }
+    temporary = {
+      source  = "kota65535/temporary"
+      version = "0.0.2"
+    }
   }
+}
+
+provider "temporary" {
+  base = "${path.root}/.terraform/tmp/s3-deployment"
 }
