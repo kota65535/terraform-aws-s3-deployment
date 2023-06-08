@@ -25,13 +25,14 @@ data "temporary_directory" "archive" {
 data "unarchive_file" "main" {
   type        = "zip"
   source_file = var.archive_path
-  pattern     = "**/*"
-  output_dir  = data.temporary_directory.archive.id
+  # cf. https://github.com/aws/aws-sdk/issues/482
+  excludes   = ["META-INF/**"]
+  output_dir = data.temporary_directory.archive.id
 }
 
 resource "aws_s3_object" "main" {
   for_each = { for e in data.unarchive_file.main.output_files : e.name =>
-    e if !contains(keys(local.file_replacements), e.name) && !contains(keys(local.json_overrides), e.name) && !try(length(regex("^META\\-INF(/|\\z)", e.name)) > 0, false)
+    e if !contains(keys(local.file_replacements), e.name) && !contains(keys(local.json_overrides), e.name)
   }
 
   bucket      = var.s3_bucket
