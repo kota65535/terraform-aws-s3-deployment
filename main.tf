@@ -25,8 +25,9 @@ data "temporary_directory" "archive" {
 data "unarchive_file" "main" {
   type        = "zip"
   source_file = var.archive_path
-  excludes    = ["META-INF/**"]
-  output_dir  = data.temporary_directory.archive.id
+  # cf. https://github.com/aws/aws-sdk/issues/482
+  excludes   = ["META-INF/**"]
+  output_dir = data.temporary_directory.archive.id
 }
 
 resource "aws_s3_object" "main" {
