@@ -2,6 +2,8 @@
 
 Terraform module which deploys a static website to a S3 bucket.
 
+See: https://registry.terraform.io/modules/kota65535/s3-deployment/aws/
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
