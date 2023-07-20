@@ -44,6 +44,11 @@ fi
 
 DISTRIBUTION_ID="${POSITIONAL[0]}"
 
+if [[ "${DISTRIBUTION_ID}" == "" ]]; then
+  eecho "[INFO] Empty distribution ID, exiting..."
+  exit 0
+fi
+
 eecho "[INFO] Creating new invalidation..."
 
 invalidation_id=$(aws cloudfront create-invalidation --distribution-id "${DISTRIBUTION_ID}" --path '/*' | jq -r '.Invalidation.Id')

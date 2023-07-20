@@ -6,7 +6,7 @@ variable "archive_path" {
 variable "archive_key" {
   description = "Key to identify the contents of the archive."
   type        = string
-  default     = null
+  default     = ""
 }
 
 variable "s3_bucket" {
@@ -17,7 +17,7 @@ variable "s3_bucket" {
 variable "cloudfront_distribution_id" {
   description = "CloudFront distribution ID. Used to invalidate the cache when any resources has changed"
   type        = string
-  default     = null
+  default     = ""
 }
 
 variable "file_replacements" {

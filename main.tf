@@ -90,7 +90,6 @@ resource "aws_s3_object" "modified" {
 }
 
 resource "null_resource" "invalidation" {
-  count = var.cloudfront_distribution_id != null ? 1 : 0
   triggers = {
     archive_hash      = filemd5(var.archive_path)
     file_replacements = jsonencode(var.file_replacements)
