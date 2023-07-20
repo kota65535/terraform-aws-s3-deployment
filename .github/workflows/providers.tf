@@ -7,7 +7,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "4.67.0"
+      version = "5.9.0"
     }
     temporary = {
       source  = "kota65535/temporary"
