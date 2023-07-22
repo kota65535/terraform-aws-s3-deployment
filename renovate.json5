@@ -10,7 +10,7 @@
   ],
   "schedule": "before 1am on Monday",
   "packageRules": [
-    // based on group:allNonMajor, excluding tools
+    // Based on group:allNonMajor, excluding tools
     // cf. https://docs.renovatebot.com/presets-group/#groupallnonmajor
     {
       "groupName": "all non-major dependencies",
@@ -23,7 +23,22 @@
         "patch"
       ],
       "excludePackageNames": [
-        "terraform"
+        "golang",
+      ],
+      "excludePackagePatterns": [
+        "^(hashicorp/)?terraform$",
+      ]
+    },
+    // Terraform
+    {
+      "groupName": "terraform",
+      "groupSlug": "terraform",
+      "matchPackagePatterns": [
+        "^(hashicorp/)?terraform$",
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
       ]
     }
   ]
