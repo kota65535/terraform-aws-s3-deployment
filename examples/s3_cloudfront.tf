@@ -1,3 +1,12 @@
+resource "aws_s3_bucket" "main" {
+  bucket = local.bucket_name
+}
+
+resource "aws_s3_bucket_policy" "main" {
+  bucket = aws_s3_bucket.main.bucket
+  policy = data.aws_iam_policy_document.oai.json
+}
+
 resource "aws_cloudfront_distribution" "main" {
 
   origin {
