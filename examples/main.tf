@@ -7,7 +7,7 @@ locals {
 }
 
 module "s3_deployment" {
-  source = "../../"
+  source = "../"
 
   archive_path = "test.zip"
   s3_bucket    = local.bucket_name
@@ -54,15 +54,3 @@ module "s3_deployment" {
   cloudfront_distribution_id = aws_cloudfront_distribution.main.id
 }
 
-resource "aws_s3_bucket" "main" {
-  bucket = local.bucket_name
-}
-
-resource "aws_s3_bucket_policy" "main" {
-  bucket = aws_s3_bucket.main.bucket
-  policy = data.aws_iam_policy_document.oai.json
-}
-
-output "s3_objects" {
-  value = { for o in module.s3_deployment.s3_objects : o.key => coalesce(o.source_hash, o.content) }
-}

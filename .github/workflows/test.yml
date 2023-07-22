@@ -20,32 +20,14 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash
-        working-directory: ./.github/workflows
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Setup terraform
-        uses: ./.github/actions/setup-terraform
+      - name: Setup tools
+        uses: ./.github/actions/setup-tools
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      - name: Run terraform init
-        run: terraform init
-      - name: Run terraform apply
-        run: terraform apply -auto-approve
-      - name: Test output
-        run: |
-          terraform output -json > output.json
-          diff output.json expected.json
-      - name: Update archive
-        run: |
-          perl -pi -e "s/test.zip/test2.zip/g" main.tf
-      - name: Run terraform apply (2nd)
-        run: terraform apply -auto-approve
-      - name: Test output (2nd)
-        run: |
-          terraform output -json > output2.json
-          diff output2.json expected2.json
+      - name: Run test
+        run: go test
+        working-directory: tests
