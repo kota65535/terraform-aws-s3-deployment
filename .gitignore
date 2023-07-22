@@ -1,5 +1,28 @@
-# Created by https://www.toptal.com/developers/gitignore/api/intellij+all,terraform
-# Edit at https://www.toptal.com/developers/gitignore?templates=intellij+all,terraform
+# Created by https://www.toptal.com/developers/gitignore/api/intellij+all,terraform,go
+# Edit at https://www.toptal.com/developers/gitignore?templates=intellij+all,terraform,go
+
+### Go ###
+# If you prefer the allow list template instead of the deny list, see community template:
+# https://github.com/github/gitignore/blob/main/community/Golang/Go.AllowList.gitignore
+#
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+# Dependency directories (remove the comment below to include it)
+# vendor/
+
+# Go workspace file
+go.work
 
 ### Intellij+all ###
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio, WebStorm and Rider
@@ -125,7 +148,7 @@ override.tf.json
 .terraformrc
 terraform.rc
 
-# End of https://www.toptal.com/developers/gitignore/api/intellij+all,terraform
+# End of https://www.toptal.com/developers/gitignore/api/intellij+all,terraform,go
 
 # IntelliJ IDEA for subprojects
 **/.idea/*
