@@ -127,12 +127,13 @@ terraform.rc
 
 # End of https://www.toptal.com/developers/gitignore/api/intellij+all,terraform
 
-# Terraform variable definition files for sensitive variables
-secret.auto.tfvars
-
 # IntelliJ IDEA for subprojects
 **/.idea/*
 
 # Sharable IntelliJ IDEA settings
 !**/.idea/codeStyles
 !**/.idea/watcherTasks.xml
+!**/.idea/scopes
+
+# Terratest
+examples/.terraform.lock.hcl
