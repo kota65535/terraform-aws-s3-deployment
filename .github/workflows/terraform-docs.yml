@@ -15,7 +15,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          depth: 0
+          ref: ${{ github.event.pull_request.head.ref }}
       - name: Render terraform docs and push changes back to PR
         uses: terraform-docs/gh-actions@main
         with:
