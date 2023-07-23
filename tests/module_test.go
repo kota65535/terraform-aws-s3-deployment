@@ -20,12 +20,18 @@ func TestModule(t *testing.T) {
 	// Act
 	terraform.InitAndApply(t, terraformOptions)
 
-	expected := make(map[string]interface{}, 0)
-	bytes, err := os.ReadFile("../tests/expected.json")
-	require.NoError(t, err)
-	err = json.Unmarshal(bytes, &expected)
-	require.NoError(t, err)
-
-	actual := terraform.OutputMapOfObjects(t, terraformOptions, "s3_objects")
+	// Assert
+	expected := readJson(t, "../tests/expected.json")
+	actual := make(map[string]interface{}, 0)
+	terraform.OutputStruct(t, terraformOptions, "s3_objects", &actual)
 	assert.True(t, reflect.DeepEqual(expected, actual))
+}
+
+func readJson(t *testing.T, path string) map[string]interface{} {
+	ret := make(map[string]interface{}, 0)
+	bytes, err := os.ReadFile(path)
+	require.NoError(t, err)
+	err = json.Unmarshal(bytes, &ret)
+	require.NoError(t, err)
+	return ret
 }
