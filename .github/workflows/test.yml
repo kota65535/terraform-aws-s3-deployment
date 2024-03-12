@@ -18,13 +18,23 @@ jobs:
         env:
           JSON: ${{ toJSON(github) }}
 
-  test:
-    strategy:
-      matrix:
-        runs-on:
-          - ubuntu-latest
-          - windows-latest
-    runs-on: ${{ matrix.runs-on }}
+  test-ubuntu:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup tools
+        uses: ./.github/actions/setup-tools
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      - name: Run test
+        run: go test
+        working-directory: tests
+
+  test-windows:
+    needs: [test-ubuntu]
+    runs-on: windows-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
