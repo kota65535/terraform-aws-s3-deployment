@@ -72,7 +72,7 @@ resource "shell_script" "objects" {
         ${local.exclude_modified_files_option} >&2
     EOT
     read   = <<-EOT
-      aws s3api list-objects --bucket ${var.bucket} --query "{Keys: Contents[].Key}" --output json
+      aws s3api list-objects --bucket ${var.bucket} --query '{Keys: Contents[].Key}' --output json
     EOT
     update = <<-EOT
       aws s3 sync ${data.unarchive_file.main.output_dir} s3://${var.bucket} \
@@ -118,7 +118,7 @@ resource "shell_script" "objects_with_metadata" {
         --metadata-directive REPLACE >&2
     EOT
     read   = <<-EOT
-      aws s3api list-objects --bucket ${var.bucket} --query "{Keys: Contents[].Key}" --output json
+      aws s3api list-objects --bucket ${var.bucket} --query '{Keys: Contents[].Key}' --output json
     EOT
     update = <<-EOT
       aws s3 sync ${data.unarchive_file.main.output_dir} s3://${var.bucket} \
