@@ -19,7 +19,12 @@ jobs:
           JSON: ${{ toJSON(github) }}
 
   test:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        runs-on:
+          - ubuntu-latest
+          - windows-latest
+    runs-on: ${{ matrix.runs-on }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3

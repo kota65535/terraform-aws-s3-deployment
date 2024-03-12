@@ -1,0 +1,4 @@
+{
+  "b.json": "{\"a\":\"1\",\"h\":\"2\",\"i\":{\"j\":3,\"k\":\"4\"}}",
+  "config-09e8d29e.js": "const c = JSON.parse('{\"abc\":[1,2,3],\"unicorns\":\"awesome\"}'); export default c;"
+}

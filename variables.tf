@@ -3,21 +3,35 @@ variable "archive_path" {
   type        = string
 }
 
-variable "archive_key" {
-  description = "Key to identify the contents of the archive."
-  type        = string
-  default     = ""
-}
-
-variable "s3_bucket" {
+variable "bucket" {
   description = "Name of a S3 bucket for hosting your static website"
   type        = string
 }
 
-variable "cloudfront_distribution_id" {
-  description = "CloudFront distribution ID. Used to invalidate the cache when any resources has changed"
+variable "prefix" {
+  description = "Prefix"
   type        = string
   default     = ""
+}
+
+variable "cloudfront_distribution" {
+  description = "CloudFront distribution ID. Used to invalidate the cache when any resources has changed"
+  type = object({
+    id = string
+  })
+  default = null
+}
+
+variable "file_patterns" {
+  description = "Glob patterns to filter files when extracting the archive"
+  type        = list(string)
+  default     = null
+}
+
+variable "file_exclusion" {
+  description = "Glob patterns to exclude files when extracting the archive"
+  type        = list(string)
+  default     = null
 }
 
 variable "file_replacements" {

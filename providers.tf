@@ -8,5 +8,9 @@ terraform {
       source  = "kota65535/temporary"
       version = "~> 0.1"
     }
+    shell = {
+      source  = "scottwinkler/shell"
+      version = "1.7.10"
+    }
   }
 }
