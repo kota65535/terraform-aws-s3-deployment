@@ -89,6 +89,7 @@ func TestAdvanced(t *testing.T) {
 	assert.Equal(t, expectedKeys, actualKeys)
 
 	var wg sync.WaitGroup
+	var mu sync.Mutex
 	metadata := make(map[string]*s3.HeadObjectOutput, 0)
 	for _, item := range result.Contents {
 		item := item
@@ -102,6 +103,8 @@ func TestAdvanced(t *testing.T) {
 			if err != nil {
 				log.Fatalf("Couldn't head object in bucket, %v", err)
 			}
+			mu.Lock()
+			defer mu.Unlock()
 			metadata[*item.Key] = result
 		}()
 	}
