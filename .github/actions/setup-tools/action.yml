@@ -28,6 +28,6 @@ runs:
         terraform_version: ${{ steps.versions.outputs.terraform }}
         terraform_wrapper: false
     - name: Set up Go
-      uses: actions/setup-go@v4
+      uses: actions/setup-go@v5
       with:
         go-version: ${{ steps.versions.outputs.golang }}
