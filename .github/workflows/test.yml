@@ -24,6 +24,7 @@ jobs:
         runs-on:
           - ubuntu-latest
           - windows-latest
+      max-parallel: 1
     runs-on: ${{ matrix.runs-on }}
     env:
       TF_LOG: debug
