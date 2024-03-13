@@ -59,6 +59,7 @@ func TestAdvanced(t *testing.T) {
 	terraformOptions := &terraform.Options{
 		TerraformDir: "../examples/advanced",
 		Upgrade:      true,
+		LockTimeout:  "5m",
 	}
 
 	// Act

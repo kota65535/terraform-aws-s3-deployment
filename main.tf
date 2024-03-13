@@ -85,6 +85,7 @@ resource "shell_script" "objects" {
         ${local.exclude_modified_files_option} >&2
     EOT
   }
+  interpreter = ["bash", "-c"]
 }
 
 // Files with metadata are copied separately
@@ -148,8 +149,8 @@ resource "shell_script" "objects_with_metadata" {
         ${local.exclude_modified_files_option} >&2
     EOT
   }
-
-  depends_on = [shell_script.objects]
+  interpreter = ["bash", "-c"]
+  depends_on  = [shell_script.objects]
 }
 
 // Use `aws_s3_object` resource for modified files
@@ -169,7 +170,6 @@ resource "aws_s3_object" "modified" {
 }
 
 resource "terraform_data" "invalidation" {
-  count = var.cloudfront_distribution != null ? 1 : 0
   triggers_replace = {
     archive_hash      = filemd5(var.archive_path)
     file_replacements = jsonencode(var.file_replacements)

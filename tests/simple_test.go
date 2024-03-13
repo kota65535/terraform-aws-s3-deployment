@@ -51,6 +51,7 @@ func TestSimple(t *testing.T) {
 	terraformOptions := &terraform.Options{
 		TerraformDir: "../examples/simple",
 		Upgrade:      true,
+		LockTimeout:  "5m",
 	}
 
 	// Act
