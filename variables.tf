@@ -14,12 +14,10 @@ variable "prefix" {
   default     = ""
 }
 
-variable "cloudfront_distribution" {
+variable "cloudfront_distribution_id" {
   description = "CloudFront distribution ID. Used to invalidate the cache when any resources has changed"
-  type = object({
-    id = string
-  })
-  default = null
+  type        = string
+  default     = ""
 }
 
 variable "file_patterns" {

@@ -177,7 +177,7 @@ resource "terraform_data" "invalidation" {
     object_metadata   = jsonencode(var.object_metadata)
   }
   provisioner "local-exec" {
-    command     = "./${path.module}/scripts/invalidate.sh '${var.cloudfront_distribution.id}'"
+    command     = "./${path.module}/scripts/invalidate.sh '${var.cloudfront_distribution_id}'"
     interpreter = ["bash", "-c"]
   }
   depends_on = [shell_script.objects, shell_script.objects_with_metadata, aws_s3_object.modified]
