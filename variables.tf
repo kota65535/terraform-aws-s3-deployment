@@ -15,13 +15,13 @@ variable "cloudfront_distribution_id" {
 }
 
 variable "file_patterns" {
-  description = "Glob patterns to filter files when extracting the archive"
+  description = "[Glob patterns](https://developer.hashicorp.com/terraform/language/functions/fileset) to filter files when extracting the archive"
   type        = list(string)
   default     = null
 }
 
 variable "file_exclusion" {
-  description = "Glob patterns to exclude files when extracting the archive"
+  description = "[Glob patterns](https://developer.hashicorp.com/terraform/language/functions/fileset) to exclude files when extracting the archive"
   type        = list(string)
   default     = null
 }
