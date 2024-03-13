@@ -29,7 +29,7 @@ variable "file_exclusion" {
 variable "file_replacements" {
   description = <<-EOT
   File replacement settings.
-  * filename : Name of a file whose contents will be replaced. A glob pattern is available and if multiple files match, the first one in lexicographic order is used.
+  * filename : Name of the file to be replaced. [Glob pattern](https://developer.hashicorp.com/terraform/language/functions/fileset) is available. If patterns of the multiple settings match, only the first matched one is used.
   * content  : Content string to store in the file
 EOT
   type = list(object({
@@ -42,7 +42,7 @@ EOT
 variable "json_overrides" {
   description = <<-EOT
   JSON override settings.
-  * filename : Name of a JSON file whose properties will be overridden. A glob pattern is available and if multiple files match, the first one in lexicographic order is used.
+  * filename : Name of a JSON file whose properties will be overridden. [Glob pattern](https://developer.hashicorp.com/terraform/language/functions/fileset) is available. If patterns of the multiple settings match, only the first matched one is used.
   * content  : JSON string whose properties will override them
 EOT
   type = list(object({
