@@ -67,7 +67,7 @@ resource "shell_script" "objects" {
   // Copy all files except those to be modified or those with metadata 
   lifecycle_commands {
     create = <<-EOT
-      aws s3 cp --recursive ${data.unarchive_file.main.output_dir} s3://${var.bucket} \
+      aws s3 sync --delete ${data.unarchive_file.main.output_dir} s3://${var.bucket} \
         ${local.exclude_files_with_metadata_option} \
         ${local.exclude_modified_files_option} >&2
     EOT
@@ -75,7 +75,7 @@ resource "shell_script" "objects" {
       aws s3api list-objects --bucket ${var.bucket} --query "{Keys:Contents[].Key}" --output json
     EOT
     update = <<-EOT
-      aws s3 sync ${data.unarchive_file.main.output_dir} s3://${var.bucket} \
+      aws s3 sync --delete ${data.unarchive_file.main.output_dir} s3://${var.bucket} \
         ${local.exclude_files_with_metadata_option} \
         ${local.exclude_modified_files_option} >&2
     EOT
@@ -97,34 +97,49 @@ resource "shell_script" "objects_with_metadata" {
   // Copy files with metadata, excluding those to be modified
   lifecycle_commands {
     create = <<-EOT
-      aws s3 cp --recursive ${data.unarchive_file.main.output_dir} s3://${var.bucket} \
+      aws s3 sync --delete ${data.unarchive_file.main.output_dir} s3://${var.bucket} \
         --exclude "*" \
         ${local.include_files_with_metadata_options[count.index]} \
-        %{if local.object_metadata[count.index].content_type != null}
+        %{~if local.object_metadata[count.index].content_type != null~}
         --content-type '${local.object_metadata[count.index].content_type}' \
-        %{endif}
-        %{if local.object_metadata[count.index].cache_control != null}
+        %{~endif~}
+        %{~if local.object_metadata[count.index].cache_control != null~}
         --cache-control '${local.object_metadata[count.index].cache_control}' \
-        %{endif}
-        %{if local.object_metadata[count.index].content_disposition != null}
+        %{~endif~}
+        %{~if local.object_metadata[count.index].content_disposition != null~}
         --content-disposition '${local.object_metadata[count.index].content_disposition}' \
-        %{endif}
-        %{if local.object_metadata[count.index].content_encoding != null}
+        %{~endif~}
+        %{~if local.object_metadata[count.index].content_encoding != null~}
         --content-encoding '${local.object_metadata[count.index].content_encoding}' \
-        %{endif}
-        %{if local.object_metadata[count.index].content_language != null}
+        %{~endif~}
+        %{~if local.object_metadata[count.index].content_language != null~}
         --content-language '${local.object_metadata[count.index].content_language}' \
-        %{endif}
+        %{~endif~}
         --metadata-directive REPLACE >&2
     EOT
     read   = <<-EOT
       aws s3api list-objects --bucket ${var.bucket} --query "{Keys:Contents[].Key}" --output json
     EOT
     update = <<-EOT
-      aws s3 sync ${data.unarchive_file.main.output_dir} s3://${var.bucket} \
+      aws s3 sync --delete ${data.unarchive_file.main.output_dir} s3://${var.bucket} \
         --exclude "*" \
         ${local.include_files_with_metadata_options[count.index]} \
-        ${local.exclude_modified_files_option} >&2
+        %{~if local.object_metadata[count.index].content_type != null~}
+        --content-type '${local.object_metadata[count.index].content_type}' \
+        %{~endif~}
+        %{~if local.object_metadata[count.index].cache_control != null~}
+        --cache-control '${local.object_metadata[count.index].cache_control}' \
+        %{~endif~}
+        %{~if local.object_metadata[count.index].content_disposition != null~}
+        --content-disposition '${local.object_metadata[count.index].content_disposition}' \
+        %{~endif~}
+        %{~if local.object_metadata[count.index].content_encoding != null~}
+        --content-encoding '${local.object_metadata[count.index].content_encoding}' \
+        %{~endif~}
+        %{~if local.object_metadata[count.index].content_language != null~}
+        --content-language '${local.object_metadata[count.index].content_language}' \
+        %{~endif~}
+        --metadata-directive REPLACE >&2
     EOT
     delete = <<-EOT
       aws s3 rm --recursive s3://${var.bucket} \
