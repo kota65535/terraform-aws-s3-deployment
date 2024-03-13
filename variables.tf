@@ -1,17 +1,11 @@
 variable "archive_path" {
-  description = "Path of an archive file containing your static website resources"
+  description = "Path of the archive file containing your static website resources"
   type        = string
 }
 
 variable "bucket" {
   description = "Name of a S3 bucket for hosting your static website"
   type        = string
-}
-
-variable "prefix" {
-  description = "Prefix"
-  type        = string
-  default     = ""
 }
 
 variable "cloudfront_distribution_id" {
