@@ -1,4 +1,6 @@
 terraform {
+  required_version = ">= 1.4.0"
+
   required_providers {
     unarchive = {
       source  = "kota65535/unarchive"
@@ -12,6 +14,8 @@ terraform {
       source  = "scottwinkler/shell"
       version = "~> 1.7"
     }
+    aws = {
+      source = "hashicorp/aws"
+    }
   }
-  required_version = ">= 1.4.0"
 }
