@@ -2,7 +2,7 @@ terraform {
   backend "s3" {
     bucket = "terraform-backend-561678142736"
     region = "ap-northeast-1"
-    key    = "terraform-aws-s3-deployment.tfstate"
+    key    = "terraform-aws-s3-deployment-simple.tfstate"
   }
   required_providers {
     aws = {
@@ -11,10 +11,10 @@ terraform {
     }
     temporary = {
       source  = "kota65535/temporary"
-      version = "0.1.0"
+      version = "0.2.0"
     }
   }
-  required_version = "~> 1.5.0"
+  required_version = ">= 1.4.0"
 }
 
 provider "aws" {

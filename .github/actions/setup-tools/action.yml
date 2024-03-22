@@ -8,6 +8,9 @@ inputs:
   aws-secret-access-key:
     description: AWS secret access key
     required: true
+  terraform-version:
+    description: Terraform version
+    required: true
 
 
 runs:
@@ -25,7 +28,7 @@ runs:
     - name: Setup terraform
       uses: hashicorp/setup-terraform@v3
       with:
-        terraform_version: ${{ steps.versions.outputs.terraform }}
+        terraform_version: ${{ inputs.terraform-version }}
         terraform_wrapper: false
     - name: Set up Go
       uses: actions/setup-go@v5

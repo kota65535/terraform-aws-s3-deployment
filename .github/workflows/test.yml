@@ -19,13 +19,25 @@ jobs:
           JSON: ${{ toJSON(github) }}
 
   test:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        runs-on:
+          - ubuntu-latest
+          - windows-latest
+        terraform:
+          - 1.4.0
+          - latest
+      max-parallel: 1
+    runs-on: ${{ matrix.runs-on }}
+    env:
+      TF_LOG_PROVIDER: debug
     steps:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Setup tools
         uses: ./.github/actions/setup-tools
         with:
+          terraform-version: ${{ matrix.terraform }}
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       - name: Run test

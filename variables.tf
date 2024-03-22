@@ -1,15 +1,9 @@
 variable "archive_path" {
-  description = "Path of an archive file containing your static website resources"
+  description = "Path of the archive file containing your static website resources"
   type        = string
 }
 
-variable "archive_key" {
-  description = "Key to identify the contents of the archive."
-  type        = string
-  default     = ""
-}
-
-variable "s3_bucket" {
+variable "bucket" {
   description = "Name of a S3 bucket for hosting your static website"
   type        = string
 }
@@ -20,10 +14,22 @@ variable "cloudfront_distribution_id" {
   default     = ""
 }
 
+variable "file_patterns" {
+  description = "[Glob patterns](https://developer.hashicorp.com/terraform/language/functions/fileset) to filter files when extracting the archive"
+  type        = list(string)
+  default     = null
+}
+
+variable "file_exclusion" {
+  description = "[Glob patterns](https://developer.hashicorp.com/terraform/language/functions/fileset) to exclude files when extracting the archive"
+  type        = list(string)
+  default     = null
+}
+
 variable "file_replacements" {
   description = <<-EOT
   File replacement settings.
-  * filename : Name of a file whose contents will be replaced. A glob pattern is available and if multiple files match, the first one in lexicographic order is used.
+  * filename : Name of the file to be replaced. [Glob pattern](https://developer.hashicorp.com/terraform/language/functions/fileset) is available. If patterns of the multiple settings match, only the first matched one is used.
   * content  : Content string to store in the file
 EOT
   type = list(object({
@@ -36,7 +42,7 @@ EOT
 variable "json_overrides" {
   description = <<-EOT
   JSON override settings.
-  * filename : Name of a JSON file whose properties will be overridden. A glob pattern is available and if multiple files match, the first one in lexicographic order is used.
+  * filename : Name of a JSON file whose properties will be overridden. [Glob pattern](https://developer.hashicorp.com/terraform/language/functions/fileset) is available. If patterns of the multiple settings match, only the first matched one is used.
   * content  : JSON string whose properties will override them
 EOT
   type = list(object({

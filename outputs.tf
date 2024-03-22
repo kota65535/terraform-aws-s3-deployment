@@ -1,4 +1,4 @@
-output "s3_objects" {
-  value       = merge(aws_s3_object.main, aws_s3_object.modified)
-  description = "Uploaded S3 objects"
+output "s3_objects_modified" {
+  value       = aws_s3_object.modified
+  description = "S3 objects replaced or overridden"
 }
