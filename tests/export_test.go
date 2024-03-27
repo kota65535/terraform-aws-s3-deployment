@@ -3,17 +3,21 @@ package tests
 import (
 	"context"
 	"encoding/json"
+	"errors"
+	"github.com/avast/retry-go/v4"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/aws/aws-sdk-go-v2/service/s3/types"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"google.golang.org/api/googleapi"
 	"log"
 	"os"
 	"sort"
 	"sync"
 	"testing"
+	"time"
 )
 
 func readJson(t *testing.T, path string) map[string]interface{} {
@@ -79,7 +83,12 @@ func assertObjects(t *testing.T, svc *s3.Client, bucket string, files map[string
 		expectedKeys = append(expectedKeys, k)
 	}
 	sort.Strings(expectedKeys)
-	assert.Equal(t, expectedKeys, actualKeys)
+	isOK, _ := doRetry(func() (bool, error) {
+		return assert.ObjectsAreEqual(expectedKeys, actualKeys), nil
+	})
+	if !isOK {
+		assert.Equal(t, expectedKeys, actualKeys)
+	}
 
 	// Assert object metadata
 	var wg sync.WaitGroup
@@ -129,4 +138,21 @@ func assertObjects(t *testing.T, svc *s3.Client, bucket string, files map[string
 		}
 		assert.Equal(t, len(files[k]), matched)
 	}
+}
+
+func doRetry[T any](fn retry.RetryableFuncWithData[T]) (T, error) {
+	return retry.DoWithData(fn,
+		retry.OnRetry(func(n uint, err error) {
+			log.Printf("(#%d/3) Retrying for eventual consistentency...\n", n+1)
+		}),
+		retry.RetryIf(func(err error) bool {
+			var x *googleapi.Error
+			if errors.As(err, &x) {
+				return x.Code == 429
+			}
+			return false
+		}),
+		retry.Delay(1*time.Second),
+		retry.Attempts(3),
+	)
 }
