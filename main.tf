@@ -191,6 +191,6 @@ data "unarchive_file" "main" {
   type        = "zip"
   source_file = var.archive_path
   patterns    = var.file_patterns
-  excludes    = var.file_exclusion
+  excludes    = var.file_exclusions
   output_dir  = data.temporary_directory.archive.id
 }
