@@ -3,6 +3,8 @@ package tests
 import (
 	"context"
 	"encoding/json"
+	"fmt"
+	"github.com/avast/retry-go/v4"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/aws/aws-sdk-go-v2/service/s3/types"
@@ -14,6 +16,7 @@ import (
 	"sort"
 	"sync"
 	"testing"
+	"time"
 )
 
 func readJson(t *testing.T, path string) map[string]interface{} {
@@ -79,7 +82,15 @@ func assertObjects(t *testing.T, svc *s3.Client, bucket string, files map[string
 		expectedKeys = append(expectedKeys, k)
 	}
 	sort.Strings(expectedKeys)
-	assert.Equal(t, expectedKeys, actualKeys)
+	isOK, _ := doRetry(func() (bool, error) {
+		if !assert.ObjectsAreEqual(expectedKeys, actualKeys) {
+			return false, fmt.Errorf("assertion failed")
+		}
+		return true, nil
+	})
+	if !isOK {
+		assert.Equal(t, expectedKeys, actualKeys)
+	}
 
 	// Assert object metadata
 	var wg sync.WaitGroup
@@ -129,4 +140,14 @@ func assertObjects(t *testing.T, svc *s3.Client, bucket string, files map[string
 		}
 		assert.Equal(t, len(files[k]), matched)
 	}
+}
+
+func doRetry[T any](fn retry.RetryableFuncWithData[T]) (T, error) {
+	return retry.DoWithData(fn,
+		retry.OnRetry(func(n uint, err error) {
+			log.Printf("(#%d/3) Retrying for eventual consistentency...\n", n+1)
+		}),
+		retry.Delay(1*time.Second),
+		retry.Attempts(3),
+	)
 }
