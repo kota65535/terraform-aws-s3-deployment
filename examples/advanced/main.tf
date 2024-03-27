@@ -9,9 +9,9 @@ locals {
 module "s3_deployment" {
   source = "../.."
 
-  archive_path   = "test.zip"
-  bucket         = local.bucket_name
-  file_exclusion = ["META-INF/**"]
+  archive_path    = "test.zip"
+  bucket          = local.bucket_name
+  file_exclusions = ["META-INF/**"]
   file_replacements = [
     {
       filename = "config-*.js"
