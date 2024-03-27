@@ -3,12 +3,12 @@ module kota65535/terraform-aws-s3-deployment
 go 1.19
 
 require (
+	github.com/avast/retry-go/v4 v4.5.1
 	github.com/aws/aws-sdk-go-v2 v1.25.3
 	github.com/aws/aws-sdk-go-v2/config v1.27.7
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.51.4
 	github.com/gruntwork-io/terratest v0.43.9
 	github.com/stretchr/testify v1.8.4
-	google.golang.org/api v0.103.0
 )
 
 require (
@@ -19,7 +19,6 @@ require (
 	cloud.google.com/go/storage v1.27.0 // indirect
 	github.com/agext/levenshtein v1.2.3 // indirect
 	github.com/apparentlymart/go-textseg/v13 v13.0.0 // indirect
-	github.com/avast/retry-go/v4 v4.5.1 // indirect
 	github.com/aws/aws-sdk-go v1.44.122 // indirect
 	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.6.1 // indirect
 	github.com/aws/aws-sdk-go-v2/credentials v1.17.7 // indirect
@@ -70,6 +69,7 @@ require (
 	golang.org/x/sys v0.6.0 // indirect
 	golang.org/x/text v0.8.0 // indirect
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect
+	google.golang.org/api v0.103.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/genproto v0.0.0-20221201164419-0e50fba7f41c // indirect
 	google.golang.org/grpc v1.51.0 // indirect
