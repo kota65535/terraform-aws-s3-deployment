@@ -20,7 +20,7 @@ variable "file_patterns" {
   default     = null
 }
 
-variable "file_exclusion" {
+variable "file_exclusions" {
   description = "[Glob patterns](https://developer.hashicorp.com/terraform/language/functions/fileset) to exclude files when extracting the archive"
   type        = list(string)
   default     = null

@@ -147,7 +147,7 @@ func doRetry[T any](fn retry.RetryableFuncWithData[T]) (T, error) {
 		retry.OnRetry(func(n uint, err error) {
 			log.Printf("(#%d/3) Retrying for eventual consistentency...\n", n+1)
 		}),
-		retry.Delay(1*time.Second),
+		retry.Delay(3*time.Second),
 		retry.Attempts(3),
 	)
 }
