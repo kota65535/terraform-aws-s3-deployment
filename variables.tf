@@ -72,3 +72,9 @@ EOT
   }))
   default = []
 }
+
+variable "resources_depends_on" {
+  description = "Additional value to be added to the depends_on meta-argument for resources only"
+  type        = any
+  default     = null
+}
