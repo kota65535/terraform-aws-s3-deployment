@@ -79,11 +79,10 @@ resource "shell_script" "objects" {
         ${local.exclude_files_with_metadata_option} \
         ${local.exclude_modified_files_option} >&2
     EOT
-    delete = <<-EOT
-      aws s3 rm --recursive s3://${var.bucket} \
-        ${local.exclude_files_with_metadata_option} \
-        ${local.exclude_modified_files_option} >&2
-    EOT
+    // If we delete objects when this resource is replaced by changing triggers, there will be a moment when both
+    // new and old objects are not present.
+    // So we do not perform deletion when the resource is destroyed.
+    delete = ""
   }
   interpreter = ["bash", "-c"]
 
@@ -144,12 +143,10 @@ resource "shell_script" "objects_with_metadata" {
         %{~endif~}
         --metadata-directive REPLACE >&2
     EOT
-    delete = <<-EOT
-      aws s3 rm --recursive s3://${var.bucket} \
-        --exclude "*" \
-        ${local.include_files_with_metadata_options[count.index]} \
-        ${local.exclude_modified_files_option} >&2
-    EOT
+    // If we delete objects when this resource is replaced by changing triggers, there will be a moment when both
+    // new and old objects are not present.
+    // So we do not perform deletion when the resource is destroyed.
+    delete = ""
   }
   interpreter = ["bash", "-c"]
 
