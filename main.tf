@@ -57,6 +57,10 @@ locals {
   exclude_modified_files_option = join(" ", distinct([for k, v in local.modified_files : "--exclude '${k}'"]))
 }
 
+resource "terraform_data" "dummy_resource_deps" {
+  depends_on = var.resources_depends_on
+}
+
 // As the number of files increases, the output of the `terraform plan` becomes very long and difficult to read.
 // So we utilize `aws s3 cp` and `aws s3 sync` to copy almost all objects.
 resource "shell_script" "objects" {
@@ -86,13 +90,8 @@ resource "shell_script" "objects" {
   }
   interpreter = ["bash", "-c"]
 
-  depends_on = [var.resources_depends_on]
+  depends_on = [terraform_data.dummy_resource_deps]
 }
-
-resource "terraform_data" "dummy_resource_deps" {
-  depends_on = var.resources_depends_on
-}
-
 
 // Files with metadata are copied separately
 resource "shell_script" "objects_with_metadata" {
