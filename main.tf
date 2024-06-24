@@ -57,10 +57,6 @@ locals {
   exclude_modified_files_option = join(" ", distinct([for k, v in local.modified_files : "--exclude '${k}'"]))
 }
 
-resource "terraform_data" "dummy_resource_deps" {
-  depends_on = [var.resources_depends_on]
-}
-
 // As the number of files increases, the output of the `terraform plan` becomes very long and difficult to read.
 // So we utilize `aws s3 cp` and `aws s3 sync` to copy almost all objects.
 resource "shell_script" "objects" {
@@ -90,7 +86,7 @@ resource "shell_script" "objects" {
   }
   interpreter = ["bash", "-c"]
 
-  depends_on = [terraform_data.dummy_resource_deps]
+  depends_on = [var.resources_depends_on]
 }
 
 // Files with metadata are copied separately
@@ -154,7 +150,7 @@ resource "shell_script" "objects_with_metadata" {
   }
   interpreter = ["bash", "-c"]
 
-  depends_on = [shell_script.objects, terraform_data.dummy_resource_deps]
+  depends_on = [shell_script.objects, var.resources_depends_on]
 }
 
 // Use `aws_s3_object` resource for modified files
@@ -170,7 +166,7 @@ resource "aws_s3_object" "modified" {
   content_encoding    = try(local.object_metadata_map[each.key][0].content_encoding, null)
   content_language    = try(local.object_metadata_map[each.key][0].content_language, null)
 
-  depends_on = [shell_script.objects, shell_script.objects_with_metadata, terraform_data.dummy_resource_deps]
+  depends_on = [shell_script.objects, shell_script.objects_with_metadata, var.resources_depends_on]
 }
 
 resource "terraform_data" "invalidation" {
@@ -184,7 +180,7 @@ resource "terraform_data" "invalidation" {
     command     = "./${path.module}/scripts/invalidate.sh '${var.cloudfront_distribution_id}'"
     interpreter = ["bash", "-c"]
   }
-  depends_on = [shell_script.objects, shell_script.objects_with_metadata, aws_s3_object.modified, terraform_data.dummy_resource_deps]
+  depends_on = [shell_script.objects, shell_script.objects_with_metadata, aws_s3_object.modified, var.resources_depends_on]
 }
 
 data "temporary_directory" "archive" {
