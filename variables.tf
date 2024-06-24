@@ -74,7 +74,7 @@ EOT
 }
 
 variable "resources_depends_on" {
-  description = "Additional value to be added to the depends_on meta-argument for resources only"
+  description = "Values added to the depends_on meta-argument for the resources only"
   type        = any
-  default     = null
+  default     = list(any)
 }
