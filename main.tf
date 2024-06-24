@@ -58,7 +58,7 @@ locals {
 }
 
 resource "terraform_data" "dummy_resource_deps" {
-  depends_on = var.resources_depends_on
+  depends_on = [var.resources_depends_on]
 }
 
 // As the number of files increases, the output of the `terraform plan` becomes very long and difficult to read.

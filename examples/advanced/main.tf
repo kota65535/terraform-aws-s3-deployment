@@ -53,4 +53,6 @@ module "s3_deployment" {
     }
   ]
   cloudfront_distribution_id = aws_cloudfront_distribution.main.id
+
+  resources_depends_on = [terraform_data.dummy_resource_1, terraform_data.dummy_resource_2]
 }
