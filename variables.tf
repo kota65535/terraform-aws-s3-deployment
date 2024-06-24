@@ -72,3 +72,9 @@ EOT
   }))
   default = []
 }
+
+variable "resources_depends_on" {
+  description = "Optional 'depends_on' values for resources only to control the deployment order"
+  type        = list(any)
+  default     = []
+}

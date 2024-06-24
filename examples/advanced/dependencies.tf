@@ -61,3 +61,15 @@ data "aws_iam_policy_document" "oai" {
     }
   }
 }
+
+resource "terraform_data" "dummy_resource_1" {
+  provisioner "local-exec" {
+    command = "echo 'Dummy resource 1'"
+  }
+}
+
+resource "terraform_data" "dummy_resource_2" {
+  provisioner "local-exec" {
+    command = "echo 'Dummy resource 2'"
+  }
+}

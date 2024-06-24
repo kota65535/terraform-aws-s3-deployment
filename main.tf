@@ -85,6 +85,8 @@ resource "shell_script" "objects" {
     delete = ""
   }
   interpreter = ["bash", "-c"]
+
+  depends_on = [var.resources_depends_on]
 }
 
 // Files with metadata are copied separately
@@ -147,7 +149,8 @@ resource "shell_script" "objects_with_metadata" {
     delete = ""
   }
   interpreter = ["bash", "-c"]
-  depends_on  = [shell_script.objects]
+
+  depends_on = [shell_script.objects, var.resources_depends_on]
 }
 
 // Use `aws_s3_object` resource for modified files
@@ -163,7 +166,7 @@ resource "aws_s3_object" "modified" {
   content_encoding    = try(local.object_metadata_map[each.key][0].content_encoding, null)
   content_language    = try(local.object_metadata_map[each.key][0].content_language, null)
 
-  depends_on = [shell_script.objects, shell_script.objects_with_metadata]
+  depends_on = [shell_script.objects, shell_script.objects_with_metadata, var.resources_depends_on]
 }
 
 resource "terraform_data" "invalidation" {
@@ -177,7 +180,7 @@ resource "terraform_data" "invalidation" {
     command     = "./${path.module}/scripts/invalidate.sh '${var.cloudfront_distribution_id}'"
     interpreter = ["bash", "-c"]
   }
-  depends_on = [shell_script.objects, shell_script.objects_with_metadata, aws_s3_object.modified]
+  depends_on = [shell_script.objects, shell_script.objects_with_metadata, aws_s3_object.modified, var.resources_depends_on]
 }
 
 data "temporary_directory" "archive" {
