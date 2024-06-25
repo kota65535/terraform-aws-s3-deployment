@@ -61,7 +61,12 @@ func assertOutputs(t *testing.T, terraformOptions *terraform.Options, expected m
 
 }
 
-func assertObjects(t *testing.T, svc *s3.Client, bucket string, files map[string]map[string]string) {
+type S3Object struct {
+	Metadata map[string]string
+	ETag     string
+}
+
+func assertObjects(t *testing.T, svc *s3.Client, bucket string, files map[string]S3Object) {
 	ctx := context.TODO()
 
 	// Assert objects exist
@@ -90,6 +95,11 @@ func assertObjects(t *testing.T, svc *s3.Client, bucket string, files map[string
 	})
 	if !isOK {
 		assert.Equal(t, expectedKeys, actualKeys)
+	}
+
+	// Assert object etag
+	for _, item := range result.Contents {
+		assert.Equal(t, files[*item.Key].ETag, *item.ETag)
 	}
 
 	// Assert object metadata
@@ -123,22 +133,22 @@ func assertObjects(t *testing.T, svc *s3.Client, bucket string, files map[string
 			matched++
 		}
 		if v.CacheControl != nil {
-			assert.Equal(t, files[k]["Cache-Control"], *v.CacheControl)
+			assert.Equal(t, files[k].Metadata["Cache-Control"], *v.CacheControl)
 			matched++
 		}
 		if v.ContentDisposition != nil {
-			assert.Equal(t, files[k]["Content-Disposition"], *v.ContentDisposition)
+			assert.Equal(t, files[k].Metadata["Content-Disposition"], *v.ContentDisposition)
 			matched++
 		}
 		if v.ContentEncoding != nil {
-			assert.Equal(t, files[k]["Content-Encoding"], *v.ContentEncoding)
+			assert.Equal(t, files[k].Metadata["Content-Encoding"], *v.ContentEncoding)
 			matched++
 		}
 		if v.ContentLanguage != nil {
-			assert.Equal(t, files[k]["Content-Language"], *v.ContentLanguage)
+			assert.Equal(t, files[k].Metadata["Content-Language"], *v.ContentLanguage)
 			matched++
 		}
-		assert.Equal(t, len(files[k]), matched)
+		assert.Equal(t, len(files[k].Metadata), matched)
 	}
 }
 

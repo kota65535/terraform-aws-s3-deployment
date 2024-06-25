@@ -14,35 +14,56 @@ func TestAdvanced(t *testing.T) {
 	// Arrange
 	bucket := "s3-deployment-561678142736"
 	region := "ap-northeast-1"
-	files := map[string]map[string]string{
+	files := map[string]S3Object{
 		"a.json": {
-			"Content-Type":     "application/json",
-			"Content-Language": "en-US",
+			Metadata: map[string]string{
+				"Content-Type":     "application/json",
+				"Content-Language": "en-US",
+			},
+			ETag: "\"d5524a5b020a0553b930cc3f2f8e4cce\"",
 		},
 		"b.json": {
-			"Content-Type":        "binary/octet-stream",
-			"Cache-Control":       "public, max-age=31536000, immutable",
-			"Content-Disposition": "inline",
-			"Content-Encoding":    "compress",
-			"Content-Language":    "ja-JP",
+			Metadata: map[string]string{
+				"Content-Type":        "binary/octet-stream",
+				"Cache-Control":       "public, max-age=31536000, immutable",
+				"Content-Disposition": "inline",
+				"Content-Encoding":    "compress",
+				"Content-Language":    "ja-JP",
+			},
+			ETag: "\"64cd52391a8a2843d7cb347e872720b0\"",
 		},
 		"config-09e8d29e.js": {
-			"Content-Type":  "text/javascript",
-			"Cache-Control": "public, max-age=0, must-revalidate",
+			Metadata: map[string]string{
+				"Content-Type":  "text/javascript",
+				"Cache-Control": "public, max-age=0, must-revalidate",
+			},
+			ETag: "\"5f56ab0a8e07afb6ef5885a8486927ab\"",
 		},
 		"index.html": {
-			"Content-Type":  "text/html",
-			"Cache-Control": "public, max-age=0, must-revalidate",
+			Metadata: map[string]string{
+				"Content-Type":  "text/html",
+				"Cache-Control": "public, max-age=0, must-revalidate",
+			},
+			ETag: "\"faeee5e2efb928e33b0eb232a1ce1f85\"",
 		},
 		"octocat.png": {
-			"Content-Type": "image/png",
+			Metadata: map[string]string{
+				"Content-Type": "image/png",
+			},
+			ETag: "\"f1d23c21191e970573e34ceb555c332b\"",
 		},
 		"script.js": {
-			"Content-Type":  "text/javascript",
-			"Cache-Control": "public, max-age=0, must-revalidate",
+			Metadata: map[string]string{
+				"Content-Type":  "text/javascript",
+				"Cache-Control": "public, max-age=0, must-revalidate",
+			},
+			ETag: "\"847706ee8f66d4a9b30302446279ea5e\"",
 		},
 		"style.css": {
-			"Content-Type": "text/css",
+			Metadata: map[string]string{
+				"Content-Type": "text/css",
+			},
+			ETag: "\"ed143c36d3a6cb0fec57de6d828bb52a\"",
 		},
 	}
 
