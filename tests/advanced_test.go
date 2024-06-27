@@ -14,35 +14,51 @@ func TestAdvanced(t *testing.T) {
 	// Arrange
 	bucket := "s3-deployment-561678142736"
 	region := "ap-northeast-1"
-	files := map[string]map[string]string{
+	files := map[string]S3Object{
 		"a.json": {
-			"Content-Type":     "application/json",
-			"Content-Language": "en-US",
+			Metadata: map[string]string{
+				"Content-Type":     "application/json",
+				"Content-Language": "en-US",
+			},
 		},
 		"b.json": {
-			"Content-Type":        "binary/octet-stream",
-			"Cache-Control":       "public, max-age=31536000, immutable",
-			"Content-Disposition": "inline",
-			"Content-Encoding":    "compress",
-			"Content-Language":    "ja-JP",
+			Metadata: map[string]string{
+				"Content-Type":        "binary/octet-stream",
+				"Cache-Control":       "public, max-age=31536000, immutable",
+				"Content-Disposition": "inline",
+				"Content-Encoding":    "compress",
+				"Content-Language":    "ja-JP",
+			},
+			Content: "{\"a\":\"1\",\"h\":\"2\",\"i\":{\"j\":3,\"k\":\"4\"}}\n",
 		},
 		"config-09e8d29e.js": {
-			"Content-Type":  "text/javascript",
-			"Cache-Control": "public, max-age=0, must-revalidate",
+			Metadata: map[string]string{
+				"Content-Type":  "text/javascript",
+				"Cache-Control": "public, max-age=0, must-revalidate",
+			},
+			Content: "const c = JSON.parse('{\"abc\":[1,2,3],\"unicorns\":\"awesome\"}'); export default c;\n",
 		},
 		"index.html": {
-			"Content-Type":  "text/html",
-			"Cache-Control": "public, max-age=0, must-revalidate",
+			Metadata: map[string]string{
+				"Content-Type":  "text/html",
+				"Cache-Control": "public, max-age=0, must-revalidate",
+			},
 		},
 		"octocat.png": {
-			"Content-Type": "image/png",
+			Metadata: map[string]string{
+				"Content-Type": "image/png",
+			},
 		},
 		"script.js": {
-			"Content-Type":  "text/javascript",
-			"Cache-Control": "public, max-age=0, must-revalidate",
+			Metadata: map[string]string{
+				"Content-Type":  "text/javascript",
+				"Cache-Control": "public, max-age=0, must-revalidate",
+			},
 		},
 		"style.css": {
-			"Content-Type": "text/css",
+			Metadata: map[string]string{
+				"Content-Type": "text/css",
+			},
 		},
 	}
 
@@ -63,11 +79,10 @@ func TestAdvanced(t *testing.T) {
 	}
 
 	// Act
-	terraform.InitAndApply(t, terraformOptions)
+	out := terraform.InitAndApply(t, terraformOptions)
 
 	// Assert
-	expected := readJson(t, "../tests/advanced_expected.json")
-	assertOutputs(t, terraformOptions, expected)
+	assertResult(t, out, 5, 0, 5)
 	assertObjects(t, svc, bucket, files)
 
 	// Add an object
@@ -81,10 +96,10 @@ func TestAdvanced(t *testing.T) {
 	}
 
 	// Act
-	terraform.InitAndApply(t, terraformOptions)
+	out = terraform.InitAndApply(t, terraformOptions)
 
 	// Assert
-	assertOutputs(t, terraformOptions, expected)
+	assertResult(t, out, 5, 0, 5)
 	assertObjects(t, svc, bucket, files)
 
 	// Delete an object
@@ -97,9 +112,9 @@ func TestAdvanced(t *testing.T) {
 	}
 
 	// Act
-	terraform.InitAndApply(t, terraformOptions)
+	out = terraform.InitAndApply(t, terraformOptions)
 
 	// Assert
-	assertOutputs(t, terraformOptions, expected)
+	assertResult(t, out, 5, 0, 5)
 	assertObjects(t, svc, bucket, files)
 }

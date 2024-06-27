@@ -8,12 +8,13 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/aws/aws-sdk-go-v2/service/s3/types"
-	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"io"
 	"log"
 	"os"
 	"sort"
+	"strings"
 	"sync"
 	"testing"
 	"time"
@@ -54,14 +55,16 @@ func emptyBucket(svc *s3.Client, bucket string) {
 	}
 }
 
-func assertOutputs(t *testing.T, terraformOptions *terraform.Options, expected map[string]interface{}) {
-	actual := make(map[string]interface{})
-	terraform.OutputStruct(t, terraformOptions, "s3_objects", &actual)
-	assert.Equal(t, expected, actual)
-
+func assertResult(t *testing.T, out string, added int, changed int, destroyed int) {
+	assert.True(t, strings.Contains(out, fmt.Sprintf("Apply complete! Resources: %d added, %d changed, %d destroyed.", added, changed, destroyed)))
 }
 
-func assertObjects(t *testing.T, svc *s3.Client, bucket string, files map[string]map[string]string) {
+type S3Object struct {
+	Metadata map[string]string
+	Content  string
+}
+
+func assertObjects(t *testing.T, svc *s3.Client, bucket string, files map[string]S3Object) {
 	ctx := context.TODO()
 
 	// Assert objects exist
@@ -92,30 +95,31 @@ func assertObjects(t *testing.T, svc *s3.Client, bucket string, files map[string
 		assert.Equal(t, expectedKeys, actualKeys)
 	}
 
-	// Assert object metadata
+	// Get objects
 	var wg sync.WaitGroup
 	var mu sync.Mutex
-	metadata := make(map[string]*s3.HeadObjectOutput, 0)
+	objects := make(map[string]*s3.GetObjectOutput)
 	for _, item := range result.Contents {
 		item := item
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
-			result, err := svc.HeadObject(ctx, &s3.HeadObjectInput{
+			result, err := svc.GetObject(ctx, &s3.GetObjectInput{
 				Bucket: aws.String(bucket),
 				Key:    item.Key,
 			})
 			if err != nil {
-				log.Fatalf("Couldn't head object in bucket, %v", err)
+				log.Fatalf("Couldn't get object in bucket, %v", err)
 			}
 			mu.Lock()
 			defer mu.Unlock()
-			metadata[*item.Key] = result
+			objects[*item.Key] = result
 		}()
 	}
 	wg.Wait()
 
-	for k, v := range metadata {
+	// Assert object metadata
+	for k, v := range objects {
 		matched := 0
 		if v.ContentType != nil {
 			// TODO: cross-platform MIME type check
@@ -123,22 +127,35 @@ func assertObjects(t *testing.T, svc *s3.Client, bucket string, files map[string
 			matched++
 		}
 		if v.CacheControl != nil {
-			assert.Equal(t, files[k]["Cache-Control"], *v.CacheControl)
+			assert.Equal(t, files[k].Metadata["Cache-Control"], *v.CacheControl)
 			matched++
 		}
 		if v.ContentDisposition != nil {
-			assert.Equal(t, files[k]["Content-Disposition"], *v.ContentDisposition)
+			assert.Equal(t, files[k].Metadata["Content-Disposition"], *v.ContentDisposition)
 			matched++
 		}
 		if v.ContentEncoding != nil {
-			assert.Equal(t, files[k]["Content-Encoding"], *v.ContentEncoding)
+			assert.Equal(t, files[k].Metadata["Content-Encoding"], *v.ContentEncoding)
 			matched++
 		}
 		if v.ContentLanguage != nil {
-			assert.Equal(t, files[k]["Content-Language"], *v.ContentLanguage)
+			assert.Equal(t, files[k].Metadata["Content-Language"], *v.ContentLanguage)
 			matched++
 		}
-		assert.Equal(t, len(files[k]), matched)
+		assert.Equal(t, len(files[k].Metadata), matched)
+	}
+
+	// Assert object contents
+	for k, v := range objects {
+		defer v.Body.Close()
+		if files[k].Content == "" {
+			continue
+		}
+		body, err := io.ReadAll(v.Body)
+		if err != nil {
+			log.Fatalf("Couldn't read object body, %v", err)
+		}
+		assert.Equal(t, files[k].Content, string(body))
 	}
 }
 

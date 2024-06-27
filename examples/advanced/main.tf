@@ -39,7 +39,7 @@ module "s3_deployment" {
       content_language    = "ja-JP"
     },
     {
-      glob             = "*.json"
+      glob             = "a.json"
       content_language = "en-US"
     },
     {

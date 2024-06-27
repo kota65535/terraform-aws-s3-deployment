@@ -55,7 +55,7 @@ EOT
 variable "object_metadata" {
   description = <<-EOT
   Object metadata settings.
-  * glob                : Glob pattern to match files to set metadata values
+  * glob                : Glob pattern to match files to set metadata values. The patterns must not be overlapped.
   * cache_control       : Cache-Control metadata value
   * content_disposition : Content-Disposition metadata value
   * content_encoding    : Content-Encoding metadata value
