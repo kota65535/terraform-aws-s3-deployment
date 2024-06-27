@@ -55,6 +55,7 @@ data "unarchive_file" "main" {
 // Modify files
 data "shell_script" "modifications" {
   for_each = local.modified_files
+
   lifecycle_commands {
     read = <<-EOT
       cat <<-EOF > '${data.temporary_directory.archive.id}/${each.key}'
@@ -74,7 +75,7 @@ resource "shell_script" "objects" {
     objects               = filemd5(var.archive_path),
     objects_with_metadata = md5(jsonencode(var.object_metadata))
   }
-  // Copy all files without metadata
+  // Copy files without metadata
   lifecycle_commands {
     create = <<-EOT
       aws s3 sync --delete ${data.unarchive_file.main.output_dir} s3://${var.bucket} \
@@ -96,6 +97,7 @@ resource "shell_script" "objects" {
 // Files with metadata are copied separately
 resource "shell_script" "objects_with_metadata" {
   count = length(local.object_metadata)
+
   triggers = {
     objects               = filemd5(var.archive_path),
     objects_with_metadata = md5(jsonencode(var.object_metadata))
@@ -147,5 +149,6 @@ resource "terraform_data" "invalidation" {
     command     = "./${path.module}/scripts/invalidate.sh '${var.cloudfront_distribution_id}'"
     interpreter = ["bash", "-c"]
   }
+
   depends_on = [shell_script.objects, shell_script.objects_with_metadata, var.resources_depends_on]
 }
