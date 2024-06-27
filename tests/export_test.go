@@ -64,7 +64,7 @@ type S3Object struct {
 	Content  string
 }
 
-func assertObjects(t *testing.T, svc *s3.Client, bucket string, files map[string]S3Object) {
+func assertObjects(t *testing.T, svc *s3.Client, bucket string, files map[string]*S3Object) {
 	ctx := context.TODO()
 
 	// Assert objects exist
@@ -81,7 +81,7 @@ func assertObjects(t *testing.T, svc *s3.Client, bucket string, files map[string
 	}
 	sort.Strings(actualKeys)
 	var expectedKeys []string
-	for k, _ := range files {
+	for k := range files {
 		expectedKeys = append(expectedKeys, k)
 	}
 	sort.Strings(expectedKeys)

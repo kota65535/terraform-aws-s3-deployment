@@ -9,7 +9,7 @@ locals {
 module "s3_deployment" {
   source = "../.."
 
-  archive_path    = "test.zip"
+  archive_path    = var.archive_path
   bucket          = local.bucket_name
   file_exclusions = ["META-INF/**"]
   file_replacements = [
