@@ -169,17 +169,33 @@ resource "aws_s3_object" "modified" {
   depends_on = [shell_script.objects, shell_script.objects_with_metadata, var.resources_depends_on]
 }
 
-resource "terraform_data" "invalidation" {
-  triggers_replace = {
-    archive_hash      = filemd5(var.archive_path)
+resource "shell_script" "invalidation" {
+  count = var.cloudfront_distribution_id != null ? 1 : 0
+  triggers = {
+    archive_hash      = filemd5(var.archive_path),
     file_replacements = jsonencode(var.file_replacements)
     json_overrides    = jsonencode(var.json_overrides)
     object_metadata   = jsonencode(var.object_metadata)
   }
-  provisioner "local-exec" {
-    command     = "./${path.module}/scripts/invalidate.sh '${var.cloudfront_distribution_id}'"
-    interpreter = ["bash", "-c"]
+  lifecycle_commands {
+    create = <<-EOT
+      invalidation_id=$(aws cloudfront create-invalidation --distribution-id "${var.cloudfront_distribution_id}" --path '/*' --query "Invalidation.Id" --output text)
+      while true; do
+        sleep 10;
+        status=$(aws cloudfront get-invalidation --distribution-id "${var.cloudfront_distribution_id}" --id "$${invalidation_id}" --query "Invalidation.Status" --output text)
+        if [[ "$${status}" == "Completed" ]]; then
+          break
+        fi
+      done
+    EOT
+    read   = <<-EOT
+      aws s3api list-objects --bucket ${var.bucket} --query "{Contents: Contents[].{Key:Key, ETag:ETag}}" --output json
+    EOT
+    // Do nothing
+    delete = ""
   }
+  interpreter = ["bash", "-c"]
+
   depends_on = [shell_script.objects, shell_script.objects_with_metadata, aws_s3_object.modified, var.resources_depends_on]
 }
 

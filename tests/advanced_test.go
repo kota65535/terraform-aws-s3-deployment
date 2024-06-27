@@ -7,6 +7,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"log"
+	"strings"
 	"testing"
 )
 
@@ -84,10 +85,11 @@ func TestAdvanced(t *testing.T) {
 	}
 
 	// Act
-	terraform.InitAndApply(t, terraformOptions)
+	out := terraform.InitAndApply(t, terraformOptions)
 
 	// Assert
 	expected := readJson(t, "../tests/advanced_expected.json")
+	assertResult(t, out, 3, 5, 0)
 	assertOutputs(t, terraformOptions, expected)
 	assertObjects(t, svc, bucket, files)
 
@@ -102,9 +104,28 @@ func TestAdvanced(t *testing.T) {
 	}
 
 	// Act
-	terraform.InitAndApply(t, terraformOptions)
+	out = terraform.InitAndApply(t, terraformOptions)
 
 	// Assert
+	assertResult(t, out, 1, 5, 1)
+	assertOutputs(t, terraformOptions, expected)
+	assertObjects(t, svc, bucket, files)
+
+	// Update an object
+	_, err = svc.PutObject(ctx, &s3.PutObjectInput{
+		Bucket: aws.String(bucket),
+		Key:    aws.String("b.json"),
+		Body:   strings.NewReader("{\n  \"a\": \"9\"\n}\n"),
+	})
+	if err != nil {
+		log.Fatalf("cannot update an object, %v", err)
+	}
+
+	// Act
+	out = terraform.InitAndApply(t, terraformOptions)
+
+	// Assert
+	assertResult(t, out, 1, 6, 1)
 	assertOutputs(t, terraformOptions, expected)
 	assertObjects(t, svc, bucket, files)
 
@@ -118,9 +139,10 @@ func TestAdvanced(t *testing.T) {
 	}
 
 	// Act
-	terraform.InitAndApply(t, terraformOptions)
+	out = terraform.InitAndApply(t, terraformOptions)
 
 	// Assert
+	assertResult(t, out, 1, 5, 1)
 	assertOutputs(t, terraformOptions, expected)
 	assertObjects(t, svc, bucket, files)
 }

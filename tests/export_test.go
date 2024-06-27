@@ -14,6 +14,7 @@ import (
 	"log"
 	"os"
 	"sort"
+	"strings"
 	"sync"
 	"testing"
 	"time"
@@ -52,6 +53,10 @@ func emptyBucket(svc *s3.Client, bucket string) {
 	if err != nil {
 		log.Fatalf("Couldn't delete objects in bucket, %v", err)
 	}
+}
+
+func assertResult(t *testing.T, out string, added int, changed int, destroyed int) {
+	assert.True(t, strings.Contains(out, fmt.Sprintf("Apply complete! Resources: %d added, %d changed, %d destroyed.", added, changed, destroyed)))
 }
 
 func assertOutputs(t *testing.T, terraformOptions *terraform.Options, expected map[string]interface{}) {

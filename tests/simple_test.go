@@ -77,9 +77,10 @@ func TestSimple(t *testing.T) {
 	}
 
 	// Act
-	terraform.InitAndApply(t, terraformOptions)
+	out := terraform.InitAndApply(t, terraformOptions)
 
 	// Assert
+	assertResult(t, out, 0, 1, 0)
 	assertOutputs(t, terraformOptions, map[string]interface{}{})
 	assertObjects(t, svc, bucket, files)
 
@@ -94,9 +95,10 @@ func TestSimple(t *testing.T) {
 	}
 
 	// Act
-	terraform.InitAndApply(t, terraformOptions)
+	out = terraform.InitAndApply(t, terraformOptions)
 
 	// Assert
+	assertResult(t, out, 0, 1, 0)
 	assertOutputs(t, terraformOptions, map[string]interface{}{})
 	assertObjects(t, svc, bucket, files)
 
@@ -111,9 +113,10 @@ func TestSimple(t *testing.T) {
 	}
 
 	// Act
-	terraform.InitAndApply(t, terraformOptions)
+	out = terraform.InitAndApply(t, terraformOptions)
 
 	// Assert
+	assertResult(t, out, 0, 1, 0)
 	assertOutputs(t, terraformOptions, map[string]interface{}{})
 	assertObjects(t, svc, bucket, files)
 
@@ -127,9 +130,10 @@ func TestSimple(t *testing.T) {
 	}
 
 	// Act
-	terraform.InitAndApply(t, terraformOptions)
+	out = terraform.InitAndApply(t, terraformOptions)
 
 	// Assert
+	assertResult(t, out, 0, 1, 0)
 	assertOutputs(t, terraformOptions, map[string]interface{}{})
 	assertObjects(t, svc, bucket, files)
 }
