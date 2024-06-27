@@ -62,6 +62,8 @@ data "shell_script" "modifications" {
       EOF
     EOT
   }
+  interpreter = ["bash", "-c"]
+
   depends_on = [data.unarchive_file.main]
 }
 
