@@ -11,7 +11,7 @@ terraform {
     }
     temporary = {
       source  = "kota65535/temporary"
-      version = "0.2.1"
+      version = "1.0.0"
     }
   }
   required_version = ">= 1.4.0"
