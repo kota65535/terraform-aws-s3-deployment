@@ -20,7 +20,6 @@ See: https://registry.terraform.io/modules/kota65535/s3-deployment/aws/
 |------|---------|
 | <a name="provider_shell"></a> [shell](#provider\_shell) | ~> 1.7 |
 | <a name="provider_temporary"></a> [temporary](#provider\_temporary) | ~> 0.2 |
-| <a name="provider_terraform"></a> [terraform](#provider\_terraform) | n/a |
 | <a name="provider_unarchive"></a> [unarchive](#provider\_unarchive) | ~> 0.4 |
 
 ## Modules
@@ -31,9 +30,9 @@ No modules.
 
 | Name | Type |
 |------|------|
+| [shell_script.invalidation](https://registry.terraform.io/providers/scottwinkler/shell/latest/docs/resources/script) | resource |
 | [shell_script.objects](https://registry.terraform.io/providers/scottwinkler/shell/latest/docs/resources/script) | resource |
 | [shell_script.objects_with_metadata](https://registry.terraform.io/providers/scottwinkler/shell/latest/docs/resources/script) | resource |
-| [terraform_data.invalidation](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
 | [shell_script.modifications](https://registry.terraform.io/providers/scottwinkler/shell/latest/docs/data-sources/script) | data source |
 | [temporary_directory.archive](https://registry.terraform.io/providers/kota65535/temporary/latest/docs/data-sources/directory) | data source |
 | [unarchive_file.main](https://registry.terraform.io/providers/kota65535/unarchive/latest/docs/data-sources/file) | data source |
