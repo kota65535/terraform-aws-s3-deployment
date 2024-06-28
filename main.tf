@@ -41,7 +41,7 @@ locals {
 }
 
 data "temporary_directory" "archive" {
-  name = "s3-deployment/${md5(var.archive_path)}"
+  name = "s3-deployment/${filemd5(var.archive_path)}"
 }
 
 data "unarchive_file" "main" {
@@ -92,6 +92,9 @@ resource "shell_script" "objects" {
   interpreter = ["bash", "-c"]
 
   depends_on = [var.resources_depends_on]
+  lifecycle {
+    ignore_changes = [lifecycle_commands]
+  }
 }
 
 // Files with metadata are copied separately
@@ -136,6 +139,9 @@ resource "shell_script" "objects_with_metadata" {
   interpreter = ["bash", "-c"]
 
   depends_on = [shell_script.objects, var.resources_depends_on]
+  lifecycle {
+    ignore_changes = [lifecycle_commands]
+  }
 }
 
 resource "shell_script" "invalidation" {
@@ -170,4 +176,7 @@ resource "shell_script" "invalidation" {
   interpreter = ["bash", "-c"]
 
   depends_on = [shell_script.objects, shell_script.objects_with_metadata, var.resources_depends_on]
+  lifecycle {
+    ignore_changes = [lifecycle_commands]
+  }
 }

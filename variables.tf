@@ -78,3 +78,9 @@ variable "resources_depends_on" {
   type        = list(any)
   default     = []
 }
+
+variable "enable_logging" {
+  description = "Enable debug mode"
+  type        = bool
+  default     = false
+}
