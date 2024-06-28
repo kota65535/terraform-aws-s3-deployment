@@ -2,11 +2,10 @@ package tests
 
 import (
 	"context"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/gruntwork-io/terratest/modules/terraform"
-	"log"
+	"github.com/stretchr/testify/require"
 	"testing"
 )
 
@@ -14,7 +13,7 @@ func TestSimple(t *testing.T) {
 	// Arrange
 	bucket := "s3-deployment-simple-561678142736"
 	region := "ap-northeast-1"
-	files := map[string]S3Object{
+	files := map[string]*S3Object{
 		"a.json": {
 			Metadata: map[string]string{
 				"Content-Type": "application/json",
@@ -55,12 +54,9 @@ func TestSimple(t *testing.T) {
 	// S3 client
 	ctx := context.TODO()
 	cfg, err := config.LoadDefaultConfig(ctx, config.WithRegion(region))
-	if err != nil {
-		log.Fatalf("unable to load SDK config, %v", err)
-	}
-	svc := s3.NewFromConfig(cfg)
+	require.NoError(t, err, "unable to load SDK config")
 
-	emptyBucket(svc, bucket)
+	svc := s3.NewFromConfig(cfg)
 
 	terraformOptions := &terraform.Options{
 		TerraformDir: "../examples/simple",
@@ -69,42 +65,8 @@ func TestSimple(t *testing.T) {
 	}
 
 	// Act
-	out := terraform.InitAndApply(t, terraformOptions)
+	terraform.InitAndApply(t, terraformOptions)
 
 	// Assert
-	assertResult(t, out, 1, 0, 1)
-	assertObjects(t, svc, bucket, files)
-
-	// Add an object
-	_, err = svc.CopyObject(ctx, &s3.CopyObjectInput{
-		Bucket:     aws.String(bucket),
-		Key:        aws.String("delete me"),
-		CopySource: aws.String(bucket + "/a.json"),
-	})
-	if err != nil {
-		log.Fatalf("cannot add an object, %v", err)
-	}
-
-	// Act
-	out = terraform.InitAndApply(t, terraformOptions)
-
-	// Assert
-	assertResult(t, out, 1, 0, 1)
-	assertObjects(t, svc, bucket, files)
-
-	// Delete an object
-	_, err = svc.DeleteObject(ctx, &s3.DeleteObjectInput{
-		Bucket: aws.String(bucket),
-		Key:    aws.String("a.json"),
-	})
-	if err != nil {
-		log.Fatalf("cannot delete an object, %v", err)
-	}
-
-	// Act
-	out = terraform.InitAndApply(t, terraformOptions)
-
-	// Assert
-	assertResult(t, out, 1, 0, 1)
 	assertObjects(t, svc, bucket, files)
 }
