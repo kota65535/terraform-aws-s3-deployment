@@ -14,27 +14,41 @@ func TestSimple(t *testing.T) {
 	// Arrange
 	bucket := "s3-deployment-simple-561678142736"
 	region := "ap-northeast-1"
-	files := map[string]map[string]string{
+	files := map[string]S3Object{
 		"a.json": {
-			"Content-Type": "application/json",
+			Metadata: map[string]string{
+				"Content-Type": "application/json",
+			},
 		},
 		"b.json": {
-			"Content-Type": "application/json",
+			Metadata: map[string]string{
+				"Content-Type": "application/json",
+			},
 		},
 		"config-09e8d29e.js": {
-			"Content-Type": "application/javascript",
+			Metadata: map[string]string{
+				"Content-Type": "application/javascript",
+			},
 		},
 		"index.html": {
-			"Content-Type": "text/html",
+			Metadata: map[string]string{
+				"Content-Type": "text/html",
+			},
 		},
 		"octocat.png": {
-			"Content-Type": "image/png",
+			Metadata: map[string]string{
+				"Content-Type": "image/png",
+			},
 		},
 		"script.js": {
-			"Content-Type": "application/javascript",
+			Metadata: map[string]string{
+				"Content-Type": "application/javascript",
+			},
 		},
 		"style.css": {
-			"Content-Type": "text/css",
+			Metadata: map[string]string{
+				"Content-Type": "text/css",
+			},
 		},
 	}
 
@@ -55,10 +69,10 @@ func TestSimple(t *testing.T) {
 	}
 
 	// Act
-	terraform.InitAndApply(t, terraformOptions)
+	out := terraform.InitAndApply(t, terraformOptions)
 
 	// Assert
-	assertOutputs(t, terraformOptions, map[string]interface{}{})
+	assertResult(t, out, 1, 0, 1)
 	assertObjects(t, svc, bucket, files)
 
 	// Add an object
@@ -72,10 +86,10 @@ func TestSimple(t *testing.T) {
 	}
 
 	// Act
-	terraform.InitAndApply(t, terraformOptions)
+	out = terraform.InitAndApply(t, terraformOptions)
 
 	// Assert
-	assertOutputs(t, terraformOptions, map[string]interface{}{})
+	assertResult(t, out, 1, 0, 1)
 	assertObjects(t, svc, bucket, files)
 
 	// Delete an object
@@ -88,9 +102,9 @@ func TestSimple(t *testing.T) {
 	}
 
 	// Act
-	terraform.InitAndApply(t, terraformOptions)
+	out = terraform.InitAndApply(t, terraformOptions)
 
 	// Assert
-	assertOutputs(t, terraformOptions, map[string]interface{}{})
+	assertResult(t, out, 1, 0, 1)
 	assertObjects(t, svc, bucket, files)
 }
