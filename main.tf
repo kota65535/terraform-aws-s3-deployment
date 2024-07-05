@@ -120,7 +120,7 @@ resource "shell_script" "objects" {
   }
   interpreter = ["bash", "-c"]
 
-  depends_on = [var.resources_depends_on]
+  depends_on = [data.shell_script.modifications, var.resources_depends_on]
   lifecycle {
     ignore_changes = [lifecycle_commands]
   }
@@ -158,5 +158,5 @@ resource "shell_script" "invalidation" {
   }
   interpreter = ["bash", "-c"]
 
-  depends_on = [shell_script.objects, var.resources_depends_on]
+  depends_on = [shell_script.objects]
 }
