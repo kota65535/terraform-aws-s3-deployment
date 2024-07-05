@@ -10,17 +10,17 @@ See: https://registry.terraform.io/modules/kota65535/s3-deployment/aws/
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.4.0 |
-| <a name="requirement_shell"></a> [shell](#requirement\_shell) | ~> 1.7 |
-| <a name="requirement_temporary"></a> [temporary](#requirement\_temporary) | ~> 0.2 |
-| <a name="requirement_unarchive"></a> [unarchive](#requirement\_unarchive) | ~> 0.4 |
+| <a name="requirement_shell"></a> [shell](#requirement\_shell) | >= 1.7 |
+| <a name="requirement_temporary"></a> [temporary](#requirement\_temporary) | >= 0.2 |
+| <a name="requirement_unarchive"></a> [unarchive](#requirement\_unarchive) | >= 0.4 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_shell"></a> [shell](#provider\_shell) | ~> 1.7 |
-| <a name="provider_temporary"></a> [temporary](#provider\_temporary) | ~> 0.2 |
-| <a name="provider_unarchive"></a> [unarchive](#provider\_unarchive) | ~> 0.4 |
+| <a name="provider_shell"></a> [shell](#provider\_shell) | >= 1.7 |
+| <a name="provider_temporary"></a> [temporary](#provider\_temporary) | >= 0.2 |
+| <a name="provider_unarchive"></a> [unarchive](#provider\_unarchive) | >= 0.4 |
 
 ## Modules
 
