@@ -9,8 +9,7 @@ locals {
       content_language    = e.content_language
     }
   ]
-  include_files_with_metadata_options = [for e in local.object_metadata : join(" ", [for f in e.filenames : "--include '${f}'"])]
-  exclude_files_with_metadata_option  = join(" ", distinct(flatten([for e in local.object_metadata : [for f in e.filenames : "--exclude '${f}'"]])))
+  files_with_metadata = distinct(flatten([for e in local.object_metadata : e.filenames]))
 
   // Mapping of filename to the replaced content.
   // If a file matches with glob patterns of the multiple settings entries, only the first matched one is used
@@ -69,17 +68,47 @@ data "shell_script" "modifications" {
 }
 
 // As the number of files increases, the output of the `terraform plan` becomes very long and difficult to read.
-// So we utilize `aws s3 cp` and `aws s3 sync` to copy almost all objects.
+// So we utilize `aws s3 cp` and `aws s3 sync` to copy all objects.
 resource "shell_script" "objects" {
   triggers = {
     objects               = filemd5(var.archive_path)
     objects_with_metadata = md5(jsonencode(var.object_metadata))
+    json_overrides        = jsonencode(var.json_overrides)
+    object_metadata       = jsonencode(var.object_metadata)
   }
-  // Copy files without metadata
   lifecycle_commands {
+    // The create command does the following:
+    // 1. Copy objects without metadata using `aws s3 cp`.
+    // 2. Copy objects with metadata. This is done for each object_metadata setting.
+    //    If a file matches with glob patterns of the multiple settings entries, only the first matched one is used
+    // 3. Delete unneeded objects using `aws s3 sync --delete`.
     create = <<-EOT
-      aws s3 cp --recursive ${data.unarchive_file.main.output_dir} s3://${var.bucket} \
-        ${local.exclude_files_with_metadata_option} >&2
+      set -euo pipefail
+      export LC_ALL=C
+
+      cd ${data.unarchive_file.main.output_dir}
+      aws s3 cp --recursive . s3://${var.bucket} ${join(" ", [for f in local.files_with_metadata : "--exclude '${f}'"])} >&2
+      %{~for i, om in reverse(local.object_metadata)~}
+      aws s3 cp --recursive . s3://${var.bucket} \
+        --exclude '*' ${join(" ", [for f in om.filenames : "--include '${f}'"])} \
+        %{~if om.content_type != null~}
+        --content-type '${om.content_type}' \
+        %{~endif~}
+        %{~if om.cache_control != null~}
+        --cache-control '${om.cache_control}' \
+        %{~endif~}
+        %{~if om.content_disposition != null~}
+        --content-disposition '${om.content_disposition}' \
+        %{~endif~}
+        %{~if om.content_encoding != null~}
+        --content-encoding '${om.content_encoding}' \
+        %{~endif~}
+        %{~if om.content_language != null~}
+        --content-language '${om.content_language}' \
+        %{~endif~}
+        --metadata-directive REPLACE >&2
+      %{~endfor~}
+      aws s3 sync --delete . s3://${var.bucket}
     EOT
     read   = <<-EOT
       aws s3api list-objects --bucket ${var.bucket} --query "{Keys:Contents[].Key}" --output json
@@ -92,66 +121,26 @@ resource "shell_script" "objects" {
   interpreter = ["bash", "-c"]
 
   depends_on = [var.resources_depends_on]
+  lifecycle {
+    ignore_changes = [lifecycle_commands]
+  }
 }
 
-// Files with metadata are copied separately
-resource "shell_script" "objects_with_metadata" {
-  count = length(local.object_metadata)
-
-  triggers = {
-    objects               = filemd5(var.archive_path)
-    objects_with_metadata = md5(jsonencode(var.object_metadata))
-  }
-  // Copy files with metadata
-  lifecycle_commands {
-    create = <<-EOT
-      aws s3 cp --recursive ${data.unarchive_file.main.output_dir} s3://${var.bucket} \
-        --exclude '*' \
-        ${local.include_files_with_metadata_options[count.index]} \
-        %{~if local.object_metadata[count.index].content_type != null~}
-        --content-type '${local.object_metadata[count.index].content_type}' \
-        %{~endif~}
-        %{~if local.object_metadata[count.index].cache_control != null~}
-        --cache-control '${local.object_metadata[count.index].cache_control}' \
-        %{~endif~}
-        %{~if local.object_metadata[count.index].content_disposition != null~}
-        --content-disposition '${local.object_metadata[count.index].content_disposition}' \
-        %{~endif~}
-        %{~if local.object_metadata[count.index].content_encoding != null~}
-        --content-encoding '${local.object_metadata[count.index].content_encoding}' \
-        %{~endif~}
-        %{~if local.object_metadata[count.index].content_language != null~}
-        --content-language '${local.object_metadata[count.index].content_language}' \
-        %{~endif~}
-        --metadata-directive REPLACE >&2
-    EOT
-    read   = <<-EOT
-      aws s3api list-objects --bucket ${var.bucket} --query "{Keys:Contents[].Key}" --output json
-    EOT
-    // If we delete objects when this resource is replaced by changing triggers, there will be a moment when both
-    // new and old objects are not present.
-    // So we do not perform deletion when the resource is destroyed.
-    delete = ""
-  }
-  interpreter = ["bash", "-c"]
-
-  depends_on = [shell_script.objects, var.resources_depends_on]
-}
-
+// Invalidate CloudFront cache
 resource "shell_script" "invalidation" {
+  count = var.cloudfront_distribution_id != null ? 1 : 0
   triggers = {
     archive_hash      = filemd5(var.archive_path)
     file_replacements = jsonencode(var.file_replacements)
     json_overrides    = jsonencode(var.json_overrides)
     object_metadata   = jsonencode(var.object_metadata)
   }
-  // Delete unneeded files & invalidate CloudFront cache
+  // Create CloudFront invalidation and wait until completion.
   lifecycle_commands {
     create = <<-EOT
-      aws s3 sync --delete ${data.unarchive_file.main.output_dir} s3://${var.bucket}
-      if [ "${var.cloudfront_distribution_id}" == "" ]; then
-        exit 0
-      fi
+      set -euo pipefail
+      export LC_ALL=C
+
       invalidation_id=$(aws cloudfront create-invalidation --distribution-id "${var.cloudfront_distribution_id}" --path '/*' --query "Invalidation.Id" --output text)
       while true; do
         sleep 10;
@@ -169,5 +158,5 @@ resource "shell_script" "invalidation" {
   }
   interpreter = ["bash", "-c"]
 
-  depends_on = [shell_script.objects, shell_script.objects_with_metadata, var.resources_depends_on]
+  depends_on = [shell_script.objects, var.resources_depends_on]
 }
