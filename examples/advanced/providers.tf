@@ -7,11 +7,19 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "4.67.0"
+      version = "5.57.0"
     }
     temporary = {
       source  = "kota65535/temporary"
-      version = "0.2.0"
+      version = "1.0.0"
+    }
+    unarchive = {
+      source  = "kota65535/unarchive"
+      version = "1.0.0"
+    }
+    shell = {
+      source  = "scottwinkler/shell"
+      version = "1.7.10"
     }
   }
   required_version = ">= 1.4.0"

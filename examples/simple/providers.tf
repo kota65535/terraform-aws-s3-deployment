@@ -11,7 +11,15 @@ terraform {
     }
     temporary = {
       source  = "kota65535/temporary"
-      version = "0.2.0"
+      version = "0.2.1"
+    }
+    unarchive = {
+      source  = "kota65535/unarchive"
+      version = "0.4.1"
+    }
+    shell = {
+      source  = "scottwinkler/shell"
+      version = "1.7.10"
     }
   }
   required_version = ">= 1.4.0"
