@@ -14,9 +14,5 @@ terraform {
       source  = "scottwinkler/shell"
       version = ">= 1.7"
     }
-    aws = {
-      source  = "hashicorp/aws"
-      version = ">= 4"
-    }
   }
 }
