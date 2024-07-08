@@ -83,7 +83,7 @@ resource "shell_script" "objects" {
     //    If a file matches with glob patterns of the multiple settings entries, only the first matched one is used
     // 3. Delete unneeded objects using `aws s3 sync --delete`.
     create = <<-EOT
-      set -euo pipefail
+      set -eEuo pipefail
       export LC_ALL=C
 
       cd ${data.unarchive_file.main.output_dir}
@@ -138,7 +138,7 @@ resource "shell_script" "invalidation" {
   // Create CloudFront invalidation and wait until completion.
   lifecycle_commands {
     create = <<-EOT
-      set -euo pipefail
+      set -eEuo pipefail
       export LC_ALL=C
 
       invalidation_id=$(aws cloudfront create-invalidation --distribution-id "${var.cloudfront_distribution_id}" --path '/*' --query "Invalidation.Id" --output text)
