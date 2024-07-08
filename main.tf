@@ -71,10 +71,13 @@ data "shell_script" "modifications" {
 // So we utilize `aws s3 cp` and `aws s3 sync` to copy all objects.
 resource "shell_script" "objects" {
   triggers = {
-    objects               = filemd5(var.archive_path)
-    objects_with_metadata = md5(jsonencode(var.object_metadata))
-    json_overrides        = jsonencode(var.json_overrides)
-    object_metadata       = jsonencode(var.object_metadata)
+    archive_hash      = filemd5(var.archive_path)
+    bucket            = var.bucket
+    file_patterns     = jsonencode(var.file_patterns)
+    file_exclusions   = jsonencode(var.file_exclusions)
+    file_replacements = jsonencode(var.file_replacements)
+    json_overrides    = jsonencode(var.json_overrides)
+    object_metadata   = jsonencode(var.object_metadata)
   }
   lifecycle_commands {
     // The create command does the following:
@@ -131,6 +134,8 @@ resource "shell_script" "invalidation" {
   count = var.cloudfront_distribution_id != null ? 1 : 0
   triggers = {
     archive_hash      = filemd5(var.archive_path)
+    file_patterns     = jsonencode(var.file_patterns)
+    file_exclusions   = jsonencode(var.file_exclusions)
     file_replacements = jsonencode(var.file_replacements)
     json_overrides    = jsonencode(var.json_overrides)
     object_metadata   = jsonencode(var.object_metadata)
