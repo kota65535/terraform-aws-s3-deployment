@@ -11,7 +11,7 @@ variable "bucket" {
 variable "cloudfront_distribution_id" {
   description = "CloudFront distribution ID. Used to invalidate the cache when any resources has changed"
   type        = string
-  default     = ""
+  default     = null
 }
 
 variable "file_patterns" {
@@ -55,7 +55,7 @@ EOT
 variable "object_metadata" {
   description = <<-EOT
   Object metadata settings.
-  * glob                : Glob pattern to match files to set metadata values. The patterns must not be overlapped.
+  * glob                : [Glob pattern](https://developer.hashicorp.com/terraform/language/functions/fileset) to match files to set metadata values. If patterns of the multiple settings match, only the first matched one is used.
   * cache_control       : Cache-Control metadata value
   * content_disposition : Content-Disposition metadata value
   * content_encoding    : Content-Encoding metadata value

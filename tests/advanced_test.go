@@ -101,7 +101,7 @@ func TestAdvanced(t *testing.T) {
 	out = terraform.InitAndApply(t, terraformOptions)
 
 	// Assert
-	assertResult(t, out, 6, 0, 6)
+	assertResult(t, out, 2, 0, 2)
 	assertObjects(t, svc, bucket, files)
 
 	// === Test deleted object in the bucket will be added ===
@@ -117,7 +117,7 @@ func TestAdvanced(t *testing.T) {
 	out = terraform.InitAndApply(t, terraformOptions)
 
 	// Assert
-	assertResult(t, out, 6, 0, 6)
+	assertResult(t, out, 2, 0, 2)
 	assertObjects(t, svc, bucket, files)
 
 	// === Test deploying another archive ===
@@ -132,6 +132,6 @@ func TestAdvanced(t *testing.T) {
 	files["a.json"].Content = "{\n  \"a\": \"9\",\n  \"b\": 2,\n  \"c\": {\n    \"d\": \"3\"\n  }\n}\n"
 
 	// Assert
-	assertResult(t, out, 6, 0, 6)
+	assertResult(t, out, 2, 0, 2)
 	assertObjects(t, svc, bucket, files)
 }
