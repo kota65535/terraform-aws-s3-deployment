@@ -121,9 +121,6 @@ resource "shell_script" "objects" {
   interpreter = ["bash", "-c"]
 
   depends_on = [data.shell_script.modifications, var.resources_depends_on]
-  lifecycle {
-    ignore_changes = [lifecycle_commands]
-  }
 }
 
 // Invalidate CloudFront cache
