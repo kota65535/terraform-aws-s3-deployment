@@ -89,6 +89,19 @@ resource "shell_script" "objects" {
       set -eEuo pipefail
       export LC_ALL=C
 
+      %{~if var.aws_config.access_key != null~}
+        export AWS_ACCESS_KEY_ID='${var.aws_config.access_key}'
+      %{~endif~}
+      %{~if var.aws_config.secret_key != null~}
+        export AWS_SECRET_ACCESS_KEY='${var.aws_config.secret_key}'
+      %{~endif~}
+      %{~if var.aws_config.region != null~}
+        export AWS_REGION='${var.aws_config.region}'
+      %{~endif~}
+      %{~if var.aws_config.profile != null~}
+        export AWS_PROFILE='${var.aws_config.profile}'
+      %{~endif~}
+
       cd ${data.unarchive_file.main.output_dir}
       aws s3 cp --recursive . s3://${var.bucket} ${join(" ", [for f in local.files_with_metadata : "--exclude '${f}'"])} >&2
       %{~for i, om in reverse(local.object_metadata)~}
@@ -145,6 +158,19 @@ resource "shell_script" "invalidation" {
     create = <<-EOT
       set -eEuo pipefail
       export LC_ALL=C
+
+      %{~if var.aws_config.access_key != null~}
+        export AWS_ACCESS_KEY_ID='${var.aws_config.access_key}'
+      %{~endif~}
+      %{~if var.aws_config.secret_key != null~}
+        export AWS_SECRET_ACCESS_KEY='${var.aws_config.secret_key}'
+      %{~endif~}
+      %{~if var.aws_config.region != null~}
+        export AWS_REGION='${var.aws_config.region}'
+      %{~endif~}
+      %{~if var.aws_config.profile != null~}
+        export AWS_PROFILE='${var.aws_config.profile}'
+      %{~endif~}
 
       invalidation_id=$(aws cloudfront create-invalidation --distribution-id "${var.cloudfront_distribution_id}" --path '/*' --query "Invalidation.Id" --output text)
       while true; do
