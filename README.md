@@ -41,6 +41,7 @@ No modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_archive_path"></a> [archive\_path](#input\_archive\_path) | Path of the archive file containing your static website resources | `string` | n/a | yes |
+| <a name="input_aws_config"></a> [aws\_config](#input\_aws\_config) | AWS CLI configurations. See [AWS provider's configuration reference](https://registry.terraform.io/providers/hashicorp/aws/latest/docs#aws-configuration-reference) | <pre>object({<br>    access_key = optional(string)<br>    secret_key = optional(string)<br>    region     = optional(string)<br>    profile    = optional(string)<br>  })</pre> | `{}` | no |
 | <a name="input_bucket"></a> [bucket](#input\_bucket) | Name of a S3 bucket for hosting your static website | `string` | n/a | yes |
 | <a name="input_cloudfront_distribution_id"></a> [cloudfront\_distribution\_id](#input\_cloudfront\_distribution\_id) | CloudFront distribution ID. Used to invalidate the cache when any resources has changed | `string` | `null` | no |
 | <a name="input_file_exclusions"></a> [file\_exclusions](#input\_file\_exclusions) | [Glob patterns](https://developer.hashicorp.com/terraform/language/functions/fileset) to exclude files when extracting the archive | `list(string)` | `null` | no |
