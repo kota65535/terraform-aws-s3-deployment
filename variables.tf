@@ -78,3 +78,14 @@ variable "resources_depends_on" {
   type        = list(any)
   default     = []
 }
+
+variable "aws_config" {
+  description = "AWS CLI configurations. See [AWS provider's configuration reference](https://registry.terraform.io/providers/hashicorp/aws/latest/docs#aws-configuration-reference)"
+  type = object({
+    access_key = optional(string)
+    secret_key = optional(string)
+    region     = optional(string)
+    profile    = optional(string)
+  })
+  default = {}
+}

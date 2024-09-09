@@ -37,6 +37,21 @@ locals {
   }
 
   modified_files = merge(local.file_replacements, local.json_overrides)
+
+  aws_config_environments = <<-EOT
+    %{~if var.aws_config.access_key != null~}
+    export AWS_ACCESS_KEY_ID='${var.aws_config.access_key}'
+    %{~endif~}
+    %{~if var.aws_config.secret_key != null~}
+    export AWS_SECRET_ACCESS_KEY='${var.aws_config.secret_key}'
+    %{~endif~}
+    %{~if var.aws_config.region != null~}
+    export AWS_REGION='${var.aws_config.region}'
+    %{~endif~}
+    %{~if var.aws_config.profile != null~}
+    export AWS_PROFILE='${var.aws_config.profile}'
+    %{~endif~}
+  EOT
 }
 
 data "temporary_directory" "archive" {
@@ -89,6 +104,8 @@ resource "shell_script" "objects" {
       set -eEuo pipefail
       export LC_ALL=C
 
+      ${local.aws_config_environments}
+
       cd ${data.unarchive_file.main.output_dir}
       aws s3 cp --recursive . s3://${var.bucket} ${join(" ", [for f in local.files_with_metadata : "--exclude '${f}'"])} >&2
       %{~for i, om in reverse(local.object_metadata)~}
@@ -114,6 +131,11 @@ resource "shell_script" "objects" {
       aws s3 sync --delete . s3://${var.bucket}
     EOT
     read   = <<-EOT
+      set -eEuo pipefail
+      export LC_ALL=C
+
+      ${local.aws_config_environments}
+
       aws s3api list-objects --bucket ${var.bucket} --query "{Keys:Contents[].Key}" --output json
     EOT
     // If we delete objects when this resource is replaced by changing triggers, there will be a moment when both
@@ -146,6 +168,8 @@ resource "shell_script" "invalidation" {
       set -eEuo pipefail
       export LC_ALL=C
 
+      ${local.aws_config_environments}
+
       invalidation_id=$(aws cloudfront create-invalidation --distribution-id "${var.cloudfront_distribution_id}" --path '/*' --query "Invalidation.Id" --output text)
       while true; do
         sleep 10;
@@ -156,6 +180,11 @@ resource "shell_script" "invalidation" {
       done
     EOT
     read   = <<-EOT
+      set -eEuo pipefail
+      export LC_ALL=C
+
+      ${local.aws_config_environments}
+
       aws s3api list-objects --bucket ${var.bucket} --query "{Keys:Contents[].Key}" --output json
     EOT
     // Do nothing
