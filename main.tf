@@ -153,7 +153,6 @@ resource "shell_script" "objects" {
 
 // Invalidate CloudFront cache
 resource "shell_script" "invalidation" {
-  count = var.cloudfront_distribution_id != null ? 1 : 0
   triggers = {
     archive_hash      = filemd5(var.archive_path)
     file_patterns     = jsonencode(var.file_patterns)
@@ -169,6 +168,10 @@ resource "shell_script" "invalidation" {
       export LC_ALL=C
 
       ${local.aws_config_environments}
+
+      if [ -z "${var.cloudfront_distribution_id}" ]; then
+        exit 0
+      fi
 
       invalidation_id=$(aws cloudfront create-invalidation --distribution-id "${var.cloudfront_distribution_id}" --path '/*' --query "Invalidation.Id" --output text)
       while true; do
