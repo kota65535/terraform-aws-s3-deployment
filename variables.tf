@@ -11,7 +11,7 @@ variable "bucket" {
 variable "cloudfront_distribution_id" {
   description = "CloudFront distribution ID. Used to invalidate the cache when any resources has changed"
   type        = string
-  default     = null
+  default     = ""
 }
 
 variable "file_patterns" {
