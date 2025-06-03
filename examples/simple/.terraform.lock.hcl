@@ -5,6 +5,7 @@ provider "registry.terraform.io/hashicorp/aws" {
   version     = "4.67.0"
   constraints = "4.67.0"
   hashes = [
+    "h1:5Zfo3GfRSWBaXs4TGQNOflr1XaYj6pRnVJLX5VAjFX4=",
     "h1:P43vwcDPG99x5WBbmqwUPgfJrfXf6/ucAIbGlRb7k1w=",
     "zh:0843017ecc24385f2b45f2c5fce79dc25b258e50d516877b3affee3bef34f060",
     "zh:19876066cfa60de91834ec569a6448dab8c2518b8a71b5ca870b2444febddac6",
@@ -28,6 +29,7 @@ provider "registry.terraform.io/kota65535/temporary" {
   version     = "0.2.1"
   constraints = ">= 0.2.0, 0.2.1"
   hashes = [
+    "h1:OgqSAqH7qgJ8jkt8Yi2i6MMGCvvfH4u9VFq4UpnxJlM=",
     "h1:PlOLD024BC59bsrsnO1Kosl8Rb95814M6PucpPa8HLU=",
     "zh:19bcf3660ac7545103cf999e0066442f9d6350db9654e1496726520cef287246",
     "zh:1aa71cc9f9a64d48f27dd310c541878435638fa9250e5f0f71fa92b9283c745e",
@@ -52,6 +54,7 @@ provider "registry.terraform.io/kota65535/unarchive" {
   constraints = ">= 0.4.0, 0.4.1"
   hashes = [
     "h1:f0KrkccYt9G/Idl+kNBLRUKiD+/uSfORjnLoyo92qn0=",
+    "h1:rVmV+Csj4gO4M353J2avAgiX0qB6BJAG4+4VKUBT/98=",
     "zh:18db1dea4233fa6d8cf5d62a14003e92e8176fe7357817ace371fcbe597e0dfe",
     "zh:19bcf3660ac7545103cf999e0066442f9d6350db9654e1496726520cef287246",
     "zh:3a435d1a372ecfc50dd1af8c23c6c8defc5b76378b9e5992323bff2d0bfe5cb0",
@@ -72,8 +75,9 @@ provider "registry.terraform.io/kota65535/unarchive" {
 
 provider "registry.terraform.io/scottwinkler/shell" {
   version     = "1.7.10"
-  constraints = "1.7.10"
+  constraints = ">= 1.7.0, 1.7.10"
   hashes = [
+    "h1:JQSzisQQJATfDuN1voS1ZvXGrJnLjaFbtcwx+fiMr9w=",
     "h1:Z+7wNtYRSB+9lhp6D0r/swahQ5XhSSH1mfRZl6KxNr8=",
     "zh:0017ae6dcdcf320df10dd0a24f22dd7f1bd92cc62c2550f5696888d7bb042d81",
     "zh:00574d8102685054080ad68db5ee99f1ee02c07709d3f77324be2d134eddf0d4",
