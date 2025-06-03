@@ -53,5 +53,7 @@ No modules.
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+|------|-------------|
+| <a name="output_archive_extracted_dir"></a> [archive\_extracted\_dir](#output\_archive\_extracted\_dir) | n/a |
 <!-- END_TF_DOCS -->
