@@ -52,10 +52,18 @@ locals {
     export AWS_PROFILE='${var.aws_config.profile}'
     %{~endif~}
   EOT
+
+  input_hash = sha256(jsonencode({
+    archive_path = var.archive_path
+    file_patterns = var.file_patterns
+    file_exclusions = var.file_exclusions
+    json_overrides = var.json_overrides
+    object_metadata = var.object_metadata
+  }))
 }
 
 data "temporary_directory" "archive" {
-  name = "s3-deployment/${md5(var.archive_path)}"
+  name = "s3-deployment/${local.input_hash}"
 }
 
 data "unarchive_file" "main" {
