@@ -153,7 +153,8 @@ resource "shell_script" "objects" {
 
       ${local.aws_config_environments}
 
-      aws s3api list-objects --bucket ${var.bucket} --query "{Keys:Contents[].Key}" --output json
+      hash=$(aws s3api list-objects-v2 --bucket ${var.bucket} --query "sort_by(Contents,&Key)[].{Key:Key,Size:Size}" --output json | openssl md5 | awk '{ print $2 }')
+      echo "{\"hash\": \"$${hash}\"}"
     EOT
     // If we delete objects when this resource is replaced by changing triggers, there will be a moment when both
     // new and old objects are not present.
@@ -206,7 +207,8 @@ resource "shell_script" "invalidation" {
 
       ${local.aws_config_environments}
 
-      aws s3api list-objects --bucket ${var.bucket} --query "{Keys:Contents[].Key}" --output json
+      hash=$(aws s3api list-objects-v2 --bucket ${var.bucket} --query "sort_by(Contents,&Key)[].{Key:Key,Size:Size}" --output json | openssl md5 | awk '{ print $2 }')
+      echo "{\"hash\": \"$${hash}\"}"
     EOT
     // Do nothing
     delete = ""
