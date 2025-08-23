@@ -55,7 +55,6 @@ locals {
 
   input_hash = md5(jsonencode({
     archive_path = var.archive_path
-    json_overrides = var.json_overrides
   }))
 }
 
