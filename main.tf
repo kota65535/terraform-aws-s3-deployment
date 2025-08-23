@@ -53,7 +53,7 @@ locals {
     %{~endif~}
   EOT
 
-  input_hash = sha256(jsonencode({
+  input_hash = md5(jsonencode({
     archive_path = var.archive_path
     file_patterns = var.file_patterns
     file_exclusions = var.file_exclusions
