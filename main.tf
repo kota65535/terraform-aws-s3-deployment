@@ -55,10 +55,7 @@ locals {
 
   input_hash = md5(jsonencode({
     archive_path = var.archive_path
-    file_patterns = var.file_patterns
-    file_exclusions = var.file_exclusions
     json_overrides = var.json_overrides
-    object_metadata = var.object_metadata
   }))
 }
 
