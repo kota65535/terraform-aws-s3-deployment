@@ -59,7 +59,7 @@ locals {
 }
 
 data "temporary_directory" "archive" {
-  name = "s3-deployment/${local.input_hash}"
+  name = "s3-deployment/${md5(var.archive_path)}"
 }
 
 data "unarchive_file" "main" {
