@@ -1,7 +1,3 @@
-locals {
-  bucket_name = "s3-deployment-simple-561678142736"
-}
-
 module "s3_deployment" {
   source = "../../"
 

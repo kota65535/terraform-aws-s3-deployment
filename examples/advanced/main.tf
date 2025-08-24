@@ -9,7 +9,7 @@ module "s3_deployment" {
   source = "../.."
 
   archive_path    = var.archive_path
-  bucket          = var.bucket
+  bucket          = aws_s3_bucket.main.bucket
   file_exclusions = ["META-INF/**"]
   file_replacements = [
     {
