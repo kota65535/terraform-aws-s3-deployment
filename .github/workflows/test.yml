@@ -28,7 +28,6 @@ jobs:
         terraform:
           - 1.4.0
           - 1.12.0
-      max-parallel: 1
     runs-on: ${{ matrix.runs-on }}
     env:
       TF_LOG_PROVIDER: debug
