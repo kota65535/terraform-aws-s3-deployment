@@ -142,6 +142,7 @@ func TestAdvanced(t *testing.T) {
 
 	terraformOptions.Vars = map[string]interface{}{
 		"archive_path": "test2.zip",
+		"bucket":       bucket,
 	}
 
 	// Act
