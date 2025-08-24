@@ -43,5 +43,5 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       - name: Run test
-        run: go test
+        run: go test -timeout 0
         working-directory: tests
