@@ -105,10 +105,11 @@ resource "shell_script" "objects" {
   }
   lifecycle_commands {
     // The create command does the following:
-    // 1. Copy objects without metadata using `aws s3 cp`.
-    // 2. Copy objects with metadata. This is done for each object_metadata setting.
+    // 1. Create working directory and copy extracted files and modified files into it.
+    // 2. Copy objects without metadata using `aws s3 cp`.
+    // 3. Copy objects with metadata. This is done for each object_metadata setting.
     //    If a file matches with glob patterns of the multiple settings entries, only the first matched one is used
-    // 3. Delete unneeded objects using `aws s3 sync --delete`.
+    // 4. Delete unneeded objects using `aws s3 sync --delete`.
     create = <<-EOT
       set -eEuo pipefail
       export LC_ALL=C
@@ -116,8 +117,8 @@ resource "shell_script" "objects" {
       ${local.aws_config_environments}
 
       TEMP_DIR=$(mktemp -d)
-      rsync -a ${data.temporary_directory.archive.id}/ "$${TEMP_DIR}"
-      rsync -a ${data.temporary_directory.modified.id}/ "$${TEMP_DIR}"
+      cp -r ${data.temporary_directory.archive.id}/ "$${TEMP_DIR}"
+      cp -r ${data.temporary_directory.modified.id}/ "$${TEMP_DIR}"
       cd "$${TEMP_DIR}"
 
       aws s3 cp --recursive . s3://${var.bucket} ${join(" ", [for f in local.files_with_metadata : "--exclude '${f}'"])} >&2
