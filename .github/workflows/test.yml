@@ -24,6 +24,7 @@ jobs:
         runs-on:
           - ubuntu-latest
           - windows-latest
+          - macos-latest
         terraform:
           - 1.4.0
           - latest
