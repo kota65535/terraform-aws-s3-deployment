@@ -34,6 +34,7 @@ No modules.
 | [shell_script.objects](https://registry.terraform.io/providers/scottwinkler/shell/latest/docs/resources/script) | resource |
 | [shell_script.modifications](https://registry.terraform.io/providers/scottwinkler/shell/latest/docs/data-sources/script) | data source |
 | [temporary_directory.archive](https://registry.terraform.io/providers/kota65535/temporary/latest/docs/data-sources/directory) | data source |
+| [temporary_directory.modified](https://registry.terraform.io/providers/kota65535/temporary/latest/docs/data-sources/directory) | data source |
 | [unarchive_file.main](https://registry.terraform.io/providers/kota65535/unarchive/latest/docs/data-sources/file) | data source |
 
 ## Inputs
