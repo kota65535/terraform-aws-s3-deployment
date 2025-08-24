@@ -2,29 +2,16 @@ package tests
 
 import (
 	"context"
-	"fmt"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/require"
-	"os"
 	"testing"
 )
 
 func TestSimple(t *testing.T) {
-	platform, _ := os.LookupEnv("TF_PLATFORM")
-	if platform == "" {
-		platform = "unknown"
-	}
-	version, _ := os.LookupEnv("TF_VERSION")
-	if version == "" {
-		version = "unknown"
-	}
-
-	bucket := fmt.Sprintf("s3-deployment-561678142736-simple-%s-%s", platform, version)
-	backendKey := fmt.Sprintf("terraform-s3-deployment-561678142736-simple-%s-%s", platform, version)
-
 	// Arrange
+	bucket := "s3-deployment-simple-561678142736"
 	region := "ap-northeast-1"
 	files := map[string]*S3Object{
 		"a.json": {
@@ -75,13 +62,7 @@ func TestSimple(t *testing.T) {
 		TerraformDir: "../examples/simple",
 		Upgrade:      true,
 		LockTimeout:  "5m",
-		Vars: map[string]interface{}{
-			"bucket": bucket,
-		},
-		BackendConfig: map[string]interface{}{
-			"key": backendKey,
-		},
-		Reconfigure: true,
+		Reconfigure:  true,
 	}
 
 	// Act

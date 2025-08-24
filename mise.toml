@@ -1,4 +1,0 @@
-[tools]
-terraform  = "1.13.0"
-golang = "1.22.1"
-awscli = "2.28.16"

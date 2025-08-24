@@ -1,4 +1,5 @@
 locals {
+  bucket_name = "s3-deployment-561678142736"
   config = {
     unicorns = "awesome"
     abc      = [1, 2, 3]
@@ -9,7 +10,7 @@ module "s3_deployment" {
   source = "../.."
 
   archive_path    = var.archive_path
-  bucket          = aws_s3_bucket.main.bucket
+  bucket          = local.bucket_name
   file_exclusions = ["META-INF/**"]
   file_replacements = [
     {
