@@ -117,8 +117,8 @@ resource "shell_script" "objects" {
       ${local.aws_config_environments}
 
       TEMP_DIR=$(mktemp -d)
-      cp -r ${data.temporary_directory.archive.id}/ "$${TEMP_DIR}"
-      cp -r ${data.temporary_directory.modified.id}/ "$${TEMP_DIR}"
+      cp -R ${data.temporary_directory.archive.id}/. "$${TEMP_DIR}"
+      cp -R ${data.temporary_directory.modified.id}/. "$${TEMP_DIR}"
       cd "$${TEMP_DIR}"
 
       aws s3 cp --recursive . s3://${var.bucket} ${join(" ", [for f in local.files_with_metadata : "--exclude '${f}'"])} >&2
