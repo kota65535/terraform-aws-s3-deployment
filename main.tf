@@ -52,10 +52,19 @@ locals {
     export AWS_PROFILE='${var.aws_config.profile}'
     %{~endif~}
   EOT
+
+  temporary_dirs = {
+    archive = md5(var.archive_path)
+    modified_files = md5(jsonencode([var.archive_path, var.file_replacements, var.json_overrides]))
+  }
+}
+
+data "temporary_directory" "modified_files" {
+  name = "s3-deployment/${local.temporary_dirs.modified_files}"
 }
 
 data "temporary_directory" "archive" {
-  name = "s3-deployment/${md5(var.archive_path)}"
+  name = "s3-deployment/${local.temporary_dirs.archive}"
 }
 
 data "unarchive_file" "main" {
@@ -72,7 +81,7 @@ data "shell_script" "modifications" {
 
   lifecycle_commands {
     read = <<-EOT
-      cat <<-EOF > '${data.temporary_directory.archive.id}/${each.key}'
+      cat <<-EOF > '${data.temporary_directory.modified_files.id}/${each.key}'
       ${each.value[0]}
       EOF
     EOT
@@ -106,7 +115,11 @@ resource "shell_script" "objects" {
 
       ${local.aws_config_environments}
 
-      cd ${data.unarchive_file.main.output_dir}
+      TEMP_DIR=$(mktemp -d)
+      cp -r ${data.temporary_directory.archive.id}/ "$${TEMP_DIR}"
+      cp -r ${data.temporary_directory.modified_files.id}/ "$${TEMP_DIR}"
+      cd "$${TEMP_DIR}"
+
       aws s3 cp --recursive . s3://${var.bucket} ${join(" ", [for f in local.files_with_metadata : "--exclude '${f}'"])} >&2
       %{~for i, om in reverse(local.object_metadata)~}
       aws s3 cp --recursive . s3://${var.bucket} \
