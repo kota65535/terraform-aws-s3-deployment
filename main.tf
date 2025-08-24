@@ -54,13 +54,13 @@ locals {
   EOT
 
   temporary_dirs = {
-    archive = md5(var.archive_path)
-    modified_files = md5(jsonencode([var.archive_path, var.file_replacements, var.json_overrides]))
+    archive = "archive-${md5(var.archive_path)}"
+    modified = "modified-${md5(var.archive_path)}-${md5(jsonencode([var.file_replacements, var.json_overrides]))}"
   }
 }
 
-data "temporary_directory" "modified_files" {
-  name = "s3-deployment/${local.temporary_dirs.modified_files}"
+data "temporary_directory" "modified" {
+  name = "s3-deployment/${local.temporary_dirs.modified}"
 }
 
 data "temporary_directory" "archive" {
@@ -81,7 +81,7 @@ data "shell_script" "modifications" {
 
   lifecycle_commands {
     read = <<-EOT
-      cat <<-EOF > '${data.temporary_directory.modified_files.id}/${each.key}'
+      cat <<-EOF > '${data.temporary_directory.modified.id}/${each.key}'
       ${each.value[0]}
       EOF
     EOT
@@ -116,8 +116,8 @@ resource "shell_script" "objects" {
       ${local.aws_config_environments}
 
       TEMP_DIR=$(mktemp -d)
-      cp -r ${data.temporary_directory.archive.id}/ "$${TEMP_DIR}"
-      cp -r ${data.temporary_directory.modified_files.id}/ "$${TEMP_DIR}"
+      cp -R ${data.temporary_directory.archive.id}/ "$${TEMP_DIR}"
+      cp -R ${data.temporary_directory.modified.id}/ "$${TEMP_DIR}"
       cd "$${TEMP_DIR}"
 
       aws s3 cp --recursive . s3://${var.bucket} ${join(" ", [for f in local.files_with_metadata : "--exclude '${f}'"])} >&2
