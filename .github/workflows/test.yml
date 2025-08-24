@@ -27,7 +27,7 @@ jobs:
           - macos-latest
         terraform:
           - 1.4.0
-          - 1.12.0
+          - latest
     runs-on: ${{ matrix.runs-on }}
     env:
       TF_LOG_PROVIDER: debug
@@ -42,9 +42,6 @@ jobs:
           terraform-version: ${{ matrix.terraform }}
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      - name: Init
-        run:
-        working-directory: tests
       - name: Run test
         run: go test
         working-directory: tests
