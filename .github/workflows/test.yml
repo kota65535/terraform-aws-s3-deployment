@@ -27,7 +27,7 @@ jobs:
           - macos-latest
         terraform:
           - 1.4.0
-          - latest
+          - 1.12.0
       max-parallel: 1
     runs-on: ${{ matrix.runs-on }}
     env:
