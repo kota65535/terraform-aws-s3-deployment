@@ -16,21 +16,12 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Install mise
+      uses: jdx/mise-action@v2
+
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:
         aws-access-key-id: ${{ inputs.aws-access-key-id }}
         aws-secret-access-key: ${{ inputs.aws-secret-access-key }}
         aws-region: ap-northeast-1
-    - name: Get tool versions
-      uses: kota65535/github-asdf-parse-action@v2
-      id: versions
-    - name: Setup terraform
-      uses: hashicorp/setup-terraform@v3
-      with:
-        terraform_version: ${{ inputs.terraform-version }}
-        terraform_wrapper: false
-    - name: Set up Go
-      uses: actions/setup-go@v5
-      with:
-        go-version: ${{ steps.versions.outputs.golang }}

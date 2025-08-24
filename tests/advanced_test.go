@@ -2,17 +2,30 @@ package tests
 
 import (
 	"context"
+	"fmt"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/require"
+	"os"
 	"testing"
 )
 
 func TestAdvanced(t *testing.T) {
+	platform, _ := os.LookupEnv("TF_PLATFORM")
+	if platform == "" {
+		platform = "unknown"
+	}
+	version, _ := os.LookupEnv("TF_VERSION")
+	if version == "" {
+		version = "unknown"
+	}
+
+	bucket := fmt.Sprintf("s3-deployment-561678142736-%s-%s", platform, version)
+	backendKey := fmt.Sprintf("terraform-s3-deployment-561678142736-%s-%s", platform, version)
+
 	// Arrange
-	bucket := "s3-deployment-561678142736"
 	region := "ap-northeast-1"
 	files := map[string]*S3Object{
 		"a.json": {
@@ -78,6 +91,10 @@ func TestAdvanced(t *testing.T) {
 		LockTimeout:  "5m",
 		Vars: map[string]interface{}{
 			"archive_path": "test.zip",
+			"bucket":       bucket,
+		},
+		BackendConfig: map[string]interface{}{
+			"key": backendKey,
 		},
 		Reconfigure: true,
 	}
@@ -125,6 +142,7 @@ func TestAdvanced(t *testing.T) {
 
 	terraformOptions.Vars = map[string]interface{}{
 		"archive_path": "test2.zip",
+		"bucket":       bucket,
 	}
 
 	// Act
