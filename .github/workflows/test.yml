@@ -34,12 +34,20 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Setup tools
         uses: ./.github/actions/setup-tools
         with:
           terraform-version: ${{ matrix.terraform }}
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Remove CloudFront config
+        run: |
+          perl -i -ne 'print unless /^\s*cloudfront_distribution_id\s*=.*$/' advanced/main.tf
+          perl -i -ne 'print unless /^\s*cloudfront_distribution_id\s*=.*$/' simple/main.tf
+        working-directory: examples
+
       - name: Run test
         run: go test
         working-directory: tests
