@@ -54,7 +54,7 @@ locals {
   EOT
 
   temporary_dirs = {
-    archive = "archive-${md5(var.archive_path)}"
+    archive  = "archive-${md5(var.archive_path)}"
     modified = "modified-${md5(var.archive_path)}-${md5(jsonencode([var.file_replacements, var.json_overrides]))}"
   }
 }
