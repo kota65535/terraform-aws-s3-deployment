@@ -33,7 +33,7 @@ jobs:
       TF_LOG_PROVIDER: debug
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup tools
         uses: ./.github/actions/setup-tools
