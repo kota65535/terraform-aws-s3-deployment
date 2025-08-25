@@ -143,6 +143,8 @@ resource "shell_script" "objects" {
         --metadata-directive REPLACE >&2
       %{~endfor~}
       aws s3 sync --delete . s3://${var.bucket}
+
+      rm -rf "$${TEMP_DIR}"
     EOT
     read   = <<-EOT
       set -eEuo pipefail
