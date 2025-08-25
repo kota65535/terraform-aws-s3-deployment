@@ -52,19 +52,10 @@ locals {
     export AWS_PROFILE='${var.aws_config.profile}'
     %{~endif~}
   EOT
-
-  temporary_dirs = {
-    archive = "archive-${md5(var.archive_path)}"
-    modified = "modified-${md5(var.archive_path)}-${md5(jsonencode([var.file_replacements, var.json_overrides]))}"
-  }
-}
-
-data "temporary_directory" "modified" {
-  name = "s3-deployment/${local.temporary_dirs.modified}"
 }
 
 data "temporary_directory" "archive" {
-  name = "s3-deployment/${local.temporary_dirs.archive}"
+  name = "s3-deployment/${md5(var.archive_path)}"
 }
 
 data "unarchive_file" "main" {
@@ -81,7 +72,7 @@ data "shell_script" "modifications" {
 
   lifecycle_commands {
     read = <<-EOT
-      cat <<-EOF > '${data.temporary_directory.modified.id}/${each.key}'
+      cat <<-EOF > '${data.temporary_directory.archive.id}/${each.key}'
       ${each.value[0]}
       EOF
     EOT
@@ -105,22 +96,17 @@ resource "shell_script" "objects" {
   }
   lifecycle_commands {
     // The create command does the following:
-    // 1. Create working directory and copy extracted files and modified files into it.
-    // 2. Copy objects without metadata using `aws s3 cp`.
-    // 3. Copy objects with metadata. This is done for each object_metadata setting.
+    // 1. Copy objects without metadata using `aws s3 cp`.
+    // 2. Copy objects with metadata. This is done for each object_metadata setting.
     //    If a file matches with glob patterns of the multiple settings entries, only the first matched one is used
-    // 4. Delete unneeded objects using `aws s3 sync --delete`.
+    // 3. Delete unneeded objects using `aws s3 sync --delete`.
     create = <<-EOT
       set -eEuo pipefail
       export LC_ALL=C
 
       ${local.aws_config_environments}
 
-      TEMP_DIR=$(mktemp -d)
-      cp -R ${data.temporary_directory.archive.id}/. "$${TEMP_DIR}"
-      cp -R ${data.temporary_directory.modified.id}/. "$${TEMP_DIR}"
-      cd "$${TEMP_DIR}"
-
+      cd ${data.unarchive_file.main.output_dir}
       aws s3 cp --recursive . s3://${var.bucket} ${join(" ", [for f in local.files_with_metadata : "--exclude '${f}'"])} >&2
       %{~for i, om in reverse(local.object_metadata)~}
       aws s3 cp --recursive . s3://${var.bucket} \

@@ -79,7 +79,6 @@ func TestAdvanced(t *testing.T) {
 		Vars: map[string]interface{}{
 			"archive_path": "test.zip",
 		},
-		Reconfigure: true,
 	}
 
 	// Act

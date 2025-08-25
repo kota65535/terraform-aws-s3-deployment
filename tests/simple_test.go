@@ -62,7 +62,6 @@ func TestSimple(t *testing.T) {
 		TerraformDir: "../examples/simple",
 		Upgrade:      true,
 		LockTimeout:  "5m",
-		Reconfigure:  true,
 	}
 
 	// Act
