@@ -54,7 +54,7 @@ locals {
   EOT
 
   temporary_dirs = {
-    archive = "archive-${md5(var.archive_path)}"
+    archive  = "archive-${md5(var.archive_path)}"
     modified = "modified-${md5(var.archive_path)}-${md5(jsonencode([var.file_replacements, var.json_overrides]))}"
   }
 }
@@ -143,6 +143,8 @@ resource "shell_script" "objects" {
         --metadata-directive REPLACE >&2
       %{~endfor~}
       aws s3 sync --delete . s3://${var.bucket}
+
+      rm -rf "$${TEMP_DIR}"
     EOT
     read   = <<-EOT
       set -eEuo pipefail
