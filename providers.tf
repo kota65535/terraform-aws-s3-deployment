@@ -14,5 +14,9 @@ terraform {
       source  = "scottwinkler/shell"
       version = ">= 1.7"
     }
+    value = {
+      source  = "pseudo-dynamic/value"
+      version = ">= 0.5"
+    }
   }
 }
