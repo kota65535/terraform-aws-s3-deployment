@@ -89,3 +89,9 @@ variable "aws_config" {
   })
   default = {}
 }
+
+variable "force_deploy" {
+  description = "Force to deploy even if no files are changed"
+  type        = bool
+  default     = false
+}

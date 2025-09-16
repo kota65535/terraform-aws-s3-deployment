@@ -102,6 +102,7 @@ resource "shell_script" "objects" {
     file_replacements = jsonencode(var.file_replacements)
     json_overrides    = jsonencode(var.json_overrides)
     object_metadata   = jsonencode(var.object_metadata)
+    force_deploy      = value_replaced_when.force_deploy.value
   }
   lifecycle_commands {
     // The create command does the following:
@@ -176,6 +177,7 @@ resource "shell_script" "invalidation" {
     file_replacements = jsonencode(var.file_replacements)
     json_overrides    = jsonencode(var.json_overrides)
     object_metadata   = jsonencode(var.object_metadata)
+    force_deploy      = value_replaced_when.force_deploy.value
   }
   // Create CloudFront invalidation and wait until completion.
   lifecycle_commands {
@@ -212,4 +214,8 @@ resource "shell_script" "invalidation" {
   interpreter = ["bash", "-c"]
 
   depends_on = [shell_script.objects]
+}
+
+resource "value_replaced_when" "force_deploy" {
+  condition = var.force_deploy
 }
