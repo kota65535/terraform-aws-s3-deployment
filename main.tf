@@ -93,7 +93,7 @@ data "shell_script" "modifications" {
 
 // As the number of files increases, the output of the `terraform plan` becomes very long and difficult to read.
 // So we utilize `aws s3 cp` and `aws s3 sync` to copy all objects.
-resource "shell_script" "objects" {
+resource "shell_script" "main" {
   triggers = {
     archive_hash      = filemd5(var.archive_path)
     bucket            = var.bucket
@@ -111,16 +111,17 @@ resource "shell_script" "objects" {
     // 3. Copy objects with metadata. This is done for each object_metadata setting.
     //    If a file matches with glob patterns of the multiple settings entries, only the first matched one is used
     // 4. Delete unneeded objects using `aws s3 sync --delete`.
+    // 5. Invalidate CloudFront cache if distribution ID is provided.
     create = <<-EOT
       set -eEuo pipefail
       export LC_ALL=C
 
       ${local.aws_config_environments}
 
-      TEMP_DIR=$(mktemp -d)
-      cp -R ${data.temporary_directory.archive.id}/. "$${TEMP_DIR}"
-      cp -R ${data.temporary_directory.modified.id}/. "$${TEMP_DIR}"
-      cd "$${TEMP_DIR}"
+      temp_dir=$(mktemp -d)
+      cp -R ${data.temporary_directory.archive.id}/. "$${temp_dir}"
+      cp -R ${data.temporary_directory.modified.id}/. "$${temp_dir}"
+      cd "$${temp_dir}"
 
       aws s3 cp --recursive . s3://${var.bucket} ${join(" ", [for f in local.files_with_metadata : "--exclude '${f}'"])} >&2
       %{~for i, om in reverse(local.object_metadata)~}
@@ -156,7 +157,7 @@ resource "shell_script" "objects" {
         done
       fi
 
-      rm -rf "$${TEMP_DIR}"
+      rm -rf "$${temp_dir}"
     EOT
     read   = <<-EOT
       set -eEuo pipefail
@@ -164,7 +165,8 @@ resource "shell_script" "objects" {
 
       ${local.aws_config_environments}
 
-      aws s3api list-objects --bucket ${var.bucket} --query "{Keys:Contents[].Key}" --output json
+      hash=$(aws s3api list-objects-v2 --bucket ${var.bucket} --query "sort_by(Contents,&Key)[].{Key:Key,Size:Size}" --output json | openssl md5 | awk '{ print $2 }')
+      echo "{\"hash\": \"$${hash}\"}"
     EOT
     // If we delete objects when this resource is replaced by changing triggers, there will be a moment when both
     // new and old objects are not present.

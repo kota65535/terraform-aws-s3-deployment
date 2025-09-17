@@ -121,6 +121,21 @@ func TestAdvanced(t *testing.T) {
 	assertResult(t, out, 1, 0, 1)
 	assertObjects(t, svc, bucket, files)
 
+	// === Test updated object in the bucket will be reverted ===
+	_, err = svc.CopyObject(ctx, &s3.CopyObjectInput{
+		Bucket:     aws.String(bucket),
+		Key:        aws.String("b.json"),
+		CopySource: aws.String(bucket + "/a.json"),
+	})
+	require.NoError(t, err, "cannot update an object")
+
+	// Act
+	out = terraform.InitAndApply(t, terraformOptions)
+
+	// Assert
+	assertResult(t, out, 1, 0, 1)
+	assertObjects(t, svc, bucket, files)
+
 	// === Test deploying another archive ===
 
 	terraformOptions.Vars = map[string]interface{}{
