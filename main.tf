@@ -111,6 +111,7 @@ resource "shell_script" "main" {
     // 3. Copy objects with metadata. This is done for each object_metadata setting.
     //    If a file matches with glob patterns of the multiple settings entries, only the first matched one is used
     // 4. Delete unneeded objects using `aws s3 sync --delete`.
+    // 5. Invalidate CloudFront cache if distribution ID is provided.
     create = <<-EOT
       set -eEuo pipefail
       export LC_ALL=C
