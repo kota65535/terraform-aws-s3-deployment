@@ -73,6 +73,28 @@ provider "registry.terraform.io/kota65535/unarchive" {
   ]
 }
 
+provider "registry.terraform.io/pseudo-dynamic/value" {
+  version     = "0.5.5"
+  constraints = ">= 0.5.0"
+  hashes = [
+    "h1:TF43yzYB0im22/WXqX74TSRvF15wDWe090YQ2gOYdSY=",
+    "zh:015415dc0e9010d7856812e2da78d32da97add98db76c10adf791c1f86d96c84",
+    "zh:217d177a73c69a0912c34c7a684aa86061cda453623bd8a25b535c1c39b5c4b7",
+    "zh:2dc7bf9e3f3d8341c50acb3686a7f8397afd6eec090e3e7bcb1a34b7a8ab8915",
+    "zh:33456d0c9cc1797ebde9c58ac1e6b820ad8d72a08257b71d5fa0df373a1328d9",
+    "zh:4f179b87c4ae2dd1c2d786b865cde7ef49d8569e0fcf4516e48c05d7808d2eb9",
+    "zh:5e59d2062c39bfbd67a9b37719b5447b75554f6ba606788b5763f6413dd00037",
+    "zh:60b3d29b995a2c612dee945a46b57282c6843c494f57eed94adadb5eb99c73bd",
+    "zh:6e688518f16aef36fd7cfddaeb4e598e128ae84758f653e471176415b2bd31aa",
+    "zh:ba920575185dcae5ad8f3d3359c1580a05ae28cf7312165d171381af14dcfb4d",
+    "zh:bf1e76831da9b3618dcc8610aba38372300ddfc1944e603edce1f85bb2c69e6c",
+    "zh:dce71d1519cb36954c9b2a16f352aa5bcc89364b80edd89ed970908c24960aa2",
+    "zh:df10818214fb74efd58d2c117ab18aae93e8d41fb46c53b6656f580cc0b61c1b",
+    "zh:ec30f47bca6b023dd00b357e9894c66e093ae68e281c7eecdff14e071bf4ef33",
+    "zh:ed074b254a11f34d83cd4f30445ddca196ceb77ff58b0d8ad5428ed4a6db52b6",
+  ]
+}
+
 provider "registry.terraform.io/scottwinkler/shell" {
   version     = "1.7.10"
   constraints = ">= 1.7.0, 1.7.10"

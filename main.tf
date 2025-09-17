@@ -145,6 +145,17 @@ resource "shell_script" "objects" {
       %{~endfor~}
       aws s3 sync --delete . s3://${var.bucket}
 
+      if [ -n "${var.cloudfront_distribution_id}" ]; then
+        invalidation_id=$(aws cloudfront create-invalidation --distribution-id "${var.cloudfront_distribution_id}" --path '/*' --query "Invalidation.Id" --output text)
+        while true; do
+          sleep 10;
+          status=$(aws cloudfront get-invalidation --distribution-id "${var.cloudfront_distribution_id}" --id "$${invalidation_id}" --query "Invalidation.Status" --output text)
+          if [[ "$${status}" == "Completed" ]]; then
+            break
+          fi
+        done
+      fi
+
       rm -rf "$${TEMP_DIR}"
     EOT
     read   = <<-EOT
@@ -166,54 +177,6 @@ resource "shell_script" "objects" {
   lifecycle {
     ignore_changes = [lifecycle_commands]
   }
-}
-
-// Invalidate CloudFront cache
-resource "shell_script" "invalidation" {
-  triggers = {
-    archive_hash      = filemd5(var.archive_path)
-    file_patterns     = jsonencode(var.file_patterns)
-    file_exclusions   = jsonencode(var.file_exclusions)
-    file_replacements = jsonencode(var.file_replacements)
-    json_overrides    = jsonencode(var.json_overrides)
-    object_metadata   = jsonencode(var.object_metadata)
-    force_deploy      = value_replaced_when.force_deploy.value
-  }
-  // Create CloudFront invalidation and wait until completion.
-  lifecycle_commands {
-    create = <<-EOT
-      set -eEuo pipefail
-      export LC_ALL=C
-
-      ${local.aws_config_environments}
-
-      if [ -z "${var.cloudfront_distribution_id}" ]; then
-        exit 0
-      fi
-
-      invalidation_id=$(aws cloudfront create-invalidation --distribution-id "${var.cloudfront_distribution_id}" --path '/*' --query "Invalidation.Id" --output text)
-      while true; do
-        sleep 10;
-        status=$(aws cloudfront get-invalidation --distribution-id "${var.cloudfront_distribution_id}" --id "$${invalidation_id}" --query "Invalidation.Status" --output text)
-        if [[ "$${status}" == "Completed" ]]; then
-          break
-        fi
-      done
-    EOT
-    read   = <<-EOT
-      set -eEuo pipefail
-      export LC_ALL=C
-
-      ${local.aws_config_environments}
-
-      aws s3api list-objects --bucket ${var.bucket} --query "{Keys:Contents[].Key}" --output json
-    EOT
-    // Do nothing
-    delete = ""
-  }
-  interpreter = ["bash", "-c"]
-
-  depends_on = [shell_script.objects]
 }
 
 resource "value_replaced_when" "force_deploy" {
