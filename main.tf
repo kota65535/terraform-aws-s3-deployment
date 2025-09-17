@@ -164,8 +164,7 @@ resource "shell_script" "objects" {
 
       ${local.aws_config_environments}
 
-      hash=$(aws s3api list-objects-v2 --bucket ${var.bucket} --query "sort_by(Contents,&Key)[].{Key:Key,Size:Size}" --output json | openssl md5 | awk '{ print $2 }')
-      echo "{\"hash\": \"$${hash}\"}"
+      aws s3api list-objects --bucket ${var.bucket} --query "{Keys:Contents[].Key}" --output json
     EOT
     // If we delete objects when this resource is replaced by changing triggers, there will be a moment when both
     // new and old objects are not present.
