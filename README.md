@@ -32,7 +32,6 @@ No modules.
 
 | Name | Type |
 |------|------|
-| [shell_script.invalidation](https://registry.terraform.io/providers/scottwinkler/shell/latest/docs/resources/script) | resource |
 | [shell_script.objects](https://registry.terraform.io/providers/scottwinkler/shell/latest/docs/resources/script) | resource |
 | [value_replaced_when.force_deploy](https://registry.terraform.io/providers/pseudo-dynamic/value/latest/docs/resources/replaced_when) | resource |
 | [shell_script.modifications](https://registry.terraform.io/providers/scottwinkler/shell/latest/docs/data-sources/script) | data source |
